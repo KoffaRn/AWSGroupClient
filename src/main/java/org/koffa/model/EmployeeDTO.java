@@ -1,20 +1,18 @@
 package org.koffa.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class Employee {
-    private int employeeId;
+@AllArgsConstructor
+public class EmployeeDTO {
+    private int id;
     private String firstName;
     private String lastName;
     private String jobTitle;
-    private int salary;
-    private Company company;
+    private double salary;
     private City city;
+    private Company company;
 }
