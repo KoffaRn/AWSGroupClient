@@ -29,9 +29,10 @@ public class CityService {
         this.objectMapper = new ObjectMapper();
     }
 
-    public City getCityById(Long cityId) throws RuntimeException {
+    public City getCityById(Long cityId, String jwt) throws RuntimeException {
         try {
             HttpGet httpGet = new HttpGet(BASE_URL + "/" + cityId);
+            httpGet.setHeader("Authorization", "Bearer " + jwt);
             try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
                 return objectMapper.readValue(response.getEntity().getContent(), City.class);
             }
@@ -40,9 +41,10 @@ public class CityService {
         }
     }
 
-    public List<City> getAllCities() throws RuntimeException {
+    public List<City> getAllCities(String jwt) throws RuntimeException {
         try {
             HttpGet httpGet = new HttpGet(BASE_URL);
+            httpGet.setHeader("Authorization", "Bearer " + jwt);
             try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
                 return objectMapper.readValue(
                         response.getEntity().getContent(), objectMapper.getTypeFactory()
