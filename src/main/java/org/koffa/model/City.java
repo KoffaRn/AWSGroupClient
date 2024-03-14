@@ -1,2 +1,4 @@
-package org.koffa.model;public class City {
+package org.koffa.model;
+
+public class City {
 }

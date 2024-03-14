@@ -1,2 +1,5 @@
-package org.koffa.model;public class User {
+package org.koffa.model;
+
+
+public class User {
 }

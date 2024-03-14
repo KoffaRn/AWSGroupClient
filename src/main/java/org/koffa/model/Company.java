@@ -1,2 +1,5 @@
-package org.koffa.model;public class Company {
+package org.koffa.model;
+
+
+public class Company {
 }

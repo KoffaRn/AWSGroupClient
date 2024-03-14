@@ -1,2 +1,6 @@
-package org.koffa.model;public class Authority {
+package org.koffa.model;
+
+public class Authority {
+
+
 }

@@ -1,2 +1,4 @@
-package org.koffa.model;public class LoginResponse {
+package org.koffa.model;
+
+public class LoginResponse {
 }

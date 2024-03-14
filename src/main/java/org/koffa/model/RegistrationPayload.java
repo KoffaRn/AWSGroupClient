@@ -1,2 +1,4 @@
-package org.koffa.model;public class RegistrationPayload {
+package org.koffa.model;
+
+public class RegistrationPayload {
 }
