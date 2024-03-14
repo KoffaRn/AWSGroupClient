@@ -17,7 +17,10 @@ import org.koffa.model.EmployeeDTO;
 import java.util.List;
 
 public class EmployeeService {
-    private final String baseUrl = "http://localhost:5000/employee";
+    private final String baseUrl;
+    public EmployeeService(String baseUrl) {
+        this.baseUrl = baseUrl + "/employee";
+    }
     public Employee addEmployee(Employee employee, String jwt) throws RuntimeException {
         try(CloseableHttpClient httpClient = HttpClients.createDefault()) {
            HttpPost httpPost = new HttpPost(baseUrl + "/add");
