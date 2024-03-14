@@ -15,12 +15,12 @@ import java.util.List;
 
 public class CityService {
 
-    private static final String BASE_URL = "http://localhost:8080/city";
-
+    private final String BASE_URL;
     private final CloseableHttpClient httpClient;
     private final ObjectMapper objectMapper;
 
-    public CityService() {
+    public CityService(String baseUrl) {
+        BASE_URL = baseUrl + "/city";
         this.httpClient = HttpClients.createDefault();
         this.objectMapper = new ObjectMapper();
     }
