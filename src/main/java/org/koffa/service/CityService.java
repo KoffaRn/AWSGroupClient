@@ -27,44 +27,68 @@ public class CityService {
         this.objectMapper = new ObjectMapper();
     }
 
-    public City findCityById(long cityId) throws IOException {
-        HttpGet httpGet = new HttpGet(BASE_URL + "/" + cityId);
-        try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-            return objectMapper.readValue(response.getEntity().getContent(), City.class);
+    public City findCityById(long cityId) {
+        try {
+            HttpGet httpGet = new HttpGet(BASE_URL + "/" + cityId);
+            try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
+                return objectMapper.readValue(response.getEntity().getContent(), City.class);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
-    public List<City> findAllCities() throws IOException {
-        HttpGet httpGet = new HttpGet(BASE_URL);
-        try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-            return objectMapper.readValue(
-                    response.getEntity()
-                            .getContent(), objectMapper.getTypeFactory()
-                            .constructCollectionType(List.class, City.class));
+    public List<City> findAllCities() {
+        try {
+            HttpGet httpGet = new HttpGet(BASE_URL);
+            try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
+                return objectMapper.readValue(
+                        response.getEntity()
+                                .getContent(), objectMapper.getTypeFactory()
+                                .constructCollectionType(List.class, City.class));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
-    public City addCity(City city) throws IOException {
-        HttpPost httpPost = new HttpPost(BASE_URL);
-        httpPost.setEntity(new StringEntity(objectMapper.writeValueAsString(city), ContentType.APPLICATION_JSON));
-        try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
-            return objectMapper.readValue(response.getEntity()
-                    .getContent(), City.class);
+    public City addCity(City city) {
+        try {
+            HttpPost httpPost = new HttpPost(BASE_URL);
+            httpPost.setEntity(new StringEntity(objectMapper.writeValueAsString(city), ContentType.APPLICATION_JSON));
+            try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+                return objectMapper.readValue(response.getEntity().getContent(), City.class);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
-    public City updateCity(Long cityId, City city) throws IOException {
-        HttpPut httpPut = new HttpPut(BASE_URL + "/" + cityId);
-        httpPut.setEntity(new StringEntity(objectMapper.writeValueAsString(city), ContentType.APPLICATION_JSON));
-        try (CloseableHttpResponse response = httpClient.execute(httpPut)) {
-            return objectMapper.readValue(response.getEntity().getContent(), City.class);
+    public City updateCity(Long cityId, City city) {
+        try {
+            HttpPut httpPut = new HttpPut(BASE_URL + "/" + cityId);
+            httpPut.setEntity(new StringEntity(objectMapper.writeValueAsString(city), ContentType.APPLICATION_JSON));
+            try (CloseableHttpResponse response = httpClient.execute(httpPut)) {
+                return objectMapper.readValue(response.getEntity().getContent(), City.class);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
-    public String deleteCity(Long cityId) throws IOException {
-        HttpDelete httpDelete = new HttpDelete(BASE_URL + "/" + cityId);
-        try (CloseableHttpResponse response = httpClient.execute(httpDelete)) {
-            return response.getCode() + " " + response.getReasonPhrase();
+    public String deleteCity(Long cityId) {
+        try {
+            HttpDelete httpDelete = new HttpDelete(BASE_URL + "/" + cityId);
+            try (CloseableHttpResponse response = httpClient.execute(httpDelete)) {
+                return response.getCode() + " " + response.getReasonPhrase();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 }
