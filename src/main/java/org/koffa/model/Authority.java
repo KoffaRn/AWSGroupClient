@@ -1,2 +1,12 @@
-package org.koffa.model;public class Authority {
+package org.koffa.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Authority {
+    private String authority;
 }

@@ -1,2 +1,14 @@
-package org.koffa.model;public class City {
+package org.koffa.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class City {
+    private int cityId;
+    private String cityName;
+    private int id;
 }
