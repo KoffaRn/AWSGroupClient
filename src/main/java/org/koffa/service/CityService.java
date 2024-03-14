@@ -128,10 +128,4 @@ public class CityService {
             throw new RuntimeException("Failed to delete city.", e);
         }
     }
-
-
-
-
-
-
 }
