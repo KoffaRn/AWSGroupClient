@@ -1,14 +1,12 @@
 package org.koffa.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.hc.client5.http.classic.methods.HttpDelete;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.classic.methods.HttpPut;
+import org.apache.hc.client5.http.classic.methods.*;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.koffa.model.City;
 
@@ -27,68 +25,84 @@ public class CityService {
         this.objectMapper = new ObjectMapper();
     }
 
-    public City findCityById(long cityId) {
+    public City addCity(City city, String jwt) throws RuntimeException {
         try {
-            HttpGet httpGet = new HttpGet(BASE_URL + "/" + cityId);
-            try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-                return objectMapper.readValue(response.getEntity().getContent(), City.class);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public List<City> findAllCities() {
-        try {
-            HttpGet httpGet = new HttpGet(BASE_URL);
-            try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-                return objectMapper.readValue(
-                        response.getEntity()
-                                .getContent(), objectMapper.getTypeFactory()
-                                .constructCollectionType(List.class, City.class));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public City addCity(City city) {
-        try {
-            HttpPost httpPost = new HttpPost(BASE_URL);
-            httpPost.setEntity(new StringEntity(objectMapper.writeValueAsString(city), ContentType.APPLICATION_JSON));
+            HttpPost httpPost = new HttpPost(BASE_URL + "/add");
+            httpPost.setHeader("Content-type", "application/json");
+            httpPost.setHeader("Authorization", "Bearer " + jwt);
+            httpPost.setEntity(new StringEntity(objectMapper.writeValueAsString(city)));
             try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+                String result = EntityUtils.toString(response.getEntity());
+                if (result.equals("City added successfully")) {
+                    return city;
+                } else {
+                    throw new RuntimeException(result);
+                }
+            }
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public City updateCity(long cityId, City city, String jwt) throws RuntimeException {
+        try {
+            HttpPatch httpPatch = new HttpPatch(BASE_URL + "/update/" + cityId);
+            httpPatch.setHeader("Content-type", "application/json");
+            httpPatch.setHeader("Authorization", "Bearer " + jwt);
+            httpPatch.setEntity(new StringEntity(objectMapper.writeValueAsString(city)));
+            try (CloseableHttpResponse response = httpClient.execute(httpPatch)) {
+                String result = EntityUtils.toString(response.getEntity());
+                if (result.equals("City updated successfully")) {
+                    return city;
+                } else {
+                    throw new RuntimeException(result);
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public City getCityByName(String cityName, String jwt) throws RuntimeException {
+        try {
+            HttpGet httpGet = new HttpGet(BASE_URL + "/getByName?cityName=" + cityName);
+            httpGet.setHeader("Authorization", "Bearer " + jwt);
+            try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
                 return objectMapper.readValue(response.getEntity().getContent(), City.class);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
-    public City updateCity(Long cityId, City city) {
+    public List<City> getAllCities(String jwt) throws RuntimeException {
         try {
-            HttpPut httpPut = new HttpPut(BASE_URL + "/" + cityId);
-            httpPut.setEntity(new StringEntity(objectMapper.writeValueAsString(city), ContentType.APPLICATION_JSON));
-            try (CloseableHttpResponse response = httpClient.execute(httpPut)) {
-                return objectMapper.readValue(response.getEntity().getContent(), City.class);
+            HttpGet httpGet = new HttpGet(BASE_URL + "/getAll");
+            httpGet.setHeader("Authorization", "Bearer " + jwt);
+            try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
+                return objectMapper.readValue(response.getEntity().getContent(), objectMapper.getTypeFactory().constructCollectionType(List.class, City.class));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
-    public String deleteCity(Long cityId) {
+    public void deleteCity(long cityId, String jwt) throws RuntimeException {
         try {
-            HttpDelete httpDelete = new HttpDelete(BASE_URL + "/" + cityId);
+            HttpDelete httpDelete = new HttpDelete(BASE_URL + "/delete/" + cityId);
+            httpDelete.setHeader("Authorization", "Bearer " + jwt);
             try (CloseableHttpResponse response = httpClient.execute(httpDelete)) {
-                return response.getCode() + " " + response.getReasonPhrase();
+                String result = EntityUtils.toString(response.getEntity());
+                if (!result.equals("City deleted successfully")) {
+                    throw new RuntimeException(result);
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 }
