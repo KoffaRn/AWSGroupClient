@@ -13,6 +13,7 @@ import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.message.StatusLine;
 import org.koffa.model.City;
 
 import java.io.IOException;
@@ -74,16 +75,16 @@ public class CityService {
             httpPost.setEntity(new StringEntity(objectMapper.writeValueAsString(city)));
             try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
                 int statusCode = response.getCode();
-                String result = EntityUtils.toString(response.getEntity());
-                if (statusCode == HttpStatus.SC_OK && result.equals("City added successfully")) {
-                    return city;
+                if (statusCode == HttpStatus.SC_OK) {
+                    // Deserialize the response JSON to City object
+                    String responseJson = EntityUtils.toString(response.getEntity());
+                    return objectMapper.readValue(responseJson, City.class);
                 } else {
+                    String result = EntityUtils.toString(response.getEntity());
                     throw new RuntimeException("Failed to add city. Server returned status code: " + statusCode + ", Response: " + result);
                 }
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
             }
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             throw new RuntimeException("Failed to add city.", e);
         }
     }
@@ -114,10 +115,10 @@ public class CityService {
             httpDelete.setHeader("Authorization", "Bearer " + jwt);
             try (CloseableHttpResponse response = httpClient.execute(httpDelete)) {
                 int statusCode = response.getCode();
-                String result = EntityUtils.toString(response.getEntity());
-                if (statusCode == HttpStatus.SC_OK && result.equals("City deleted successfully")) {
-                    return result;
+                if (statusCode == HttpStatus.SC_OK) {
+                    return "City deleted successfully";
                 } else {
+                    String result = EntityUtils.toString(response.getEntity());
                     throw new RuntimeException("Failed to delete city. Server returned status code: " + statusCode + ", Response: " + result);
                 }
             } catch (ParseException e) {
@@ -127,5 +128,10 @@ public class CityService {
             throw new RuntimeException("Failed to delete city.", e);
         }
     }
+
+
+
+
+
 
 }
