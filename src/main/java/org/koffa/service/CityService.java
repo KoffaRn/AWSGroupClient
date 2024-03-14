@@ -9,6 +9,7 @@ import org.apache.hc.client5.http.classic.methods.HttpPut;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
@@ -34,10 +35,15 @@ public class CityService {
             HttpGet httpGet = new HttpGet(BASE_URL + "/" + cityId);
             httpGet.setHeader("Authorization", "Bearer " + jwt);
             try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-                return objectMapper.readValue(response.getEntity().getContent(), City.class);
+                int statusCode = response.getCode();
+                if (statusCode == HttpStatus.SC_OK) {
+                    return objectMapper.readValue(response.getEntity().getContent(), City.class);
+                } else {
+                    throw new RuntimeException("Failed to retrieve city. Server returned status code: " + statusCode);
+                }
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to retrieve city.", e);
         }
     }
 
@@ -46,12 +52,17 @@ public class CityService {
             HttpGet httpGet = new HttpGet(BASE_URL);
             httpGet.setHeader("Authorization", "Bearer " + jwt);
             try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-                return objectMapper.readValue(
-                        response.getEntity().getContent(), objectMapper.getTypeFactory()
-                                .constructCollectionType(List.class, City.class));
+                int statusCode = response.getCode();
+                if (statusCode == HttpStatus.SC_OK) {
+                    return objectMapper.readValue(
+                            response.getEntity().getContent(), objectMapper.getTypeFactory()
+                                    .constructCollectionType(List.class, City.class));
+                } else {
+                    throw new RuntimeException("Failed to retrieve cities. Server returned status code: " + statusCode);
+                }
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to retrieve cities.", e);
         }
     }
 
@@ -62,15 +73,18 @@ public class CityService {
             httpPost.setHeader("Authorization", "Bearer " + jwt);
             httpPost.setEntity(new StringEntity(objectMapper.writeValueAsString(city)));
             try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+                int statusCode = response.getCode();
                 String result = EntityUtils.toString(response.getEntity());
-                if (result.equals("City added successfully")) {
+                if (statusCode == HttpStatus.SC_OK && result.equals("City added successfully")) {
                     return city;
                 } else {
-                    throw new RuntimeException(result);
+                    throw new RuntimeException("Failed to add city. Server returned status code: " + statusCode + ", Response: " + result);
                 }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
-        } catch (IOException | ParseException e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to add city.", e);
         }
     }
 
@@ -81,17 +95,16 @@ public class CityService {
             httpPut.setHeader("Authorization", "Bearer " + jwt);
             httpPut.setEntity(new StringEntity(objectMapper.writeValueAsString(city)));
             try (CloseableHttpResponse response = httpClient.execute(httpPut)) {
+                int statusCode = response.getCode();
                 String result = EntityUtils.toString(response.getEntity());
-                if (result.equals("City updated successfully")) {
+                if (statusCode == HttpStatus.SC_OK && result.equals("City updated successfully")) {
                     return city;
                 } else {
-                    throw new RuntimeException(result);
+                    throw new RuntimeException("Failed to update city. Server returned status code: " + statusCode + ", Response: " + result);
                 }
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException("Failed to update city.", e);
         }
     }
 
@@ -100,15 +113,19 @@ public class CityService {
             HttpDelete httpDelete = new HttpDelete(BASE_URL + "/" + cityId);
             httpDelete.setHeader("Authorization", "Bearer " + jwt);
             try (CloseableHttpResponse response = httpClient.execute(httpDelete)) {
+                int statusCode = response.getCode();
                 String result = EntityUtils.toString(response.getEntity());
-                if (result.equals("City deleted successfully")) {
+                if (statusCode == HttpStatus.SC_OK && result.equals("City deleted successfully")) {
                     return result;
                 } else {
-                    throw new RuntimeException(result);
+                    throw new RuntimeException("Failed to delete city. Server returned status code: " + statusCode + ", Response: " + result);
                 }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
-        } catch (IOException | ParseException e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete city.", e);
         }
     }
+
 }
