@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class AdminMenu {
 
-    private final String URL = null; //Todo add URL from the properties
+    private final String URL = "http://localhost:5000"; //Todo add URL from the properties
     private final String JWT;
     private final String username;
     Scanner scanner = new Scanner(System.in);
@@ -86,7 +86,7 @@ public class AdminMenu {
                 controlCitys();
                 break;
             case 3:
-                getCityByName();
+                //getCityByName();
                 controlCitys();
                 break;
             case 4:
@@ -120,6 +120,7 @@ public class AdminMenu {
         int input = scanner.nextInt();
         cityService.deleteCity(cities.get(input).getId(), JWT);
     }
+    /*
     public void getCityByName() {
 
         System.out.println("Enter city name: ");
@@ -128,6 +129,8 @@ public class AdminMenu {
         System.out.println(city.toString());
 
     }
+
+     */
     public void updateCity() {
         List<City> cities = cityService.getAllCities(JWT);
         System.out.println("Choose city to update");

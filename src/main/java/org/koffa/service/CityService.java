@@ -27,7 +27,7 @@ public class CityService {
 
     public City addCity(City city, String jwt) throws RuntimeException {
         try {
-            HttpPost httpPost = new HttpPost(BASE_URL + "/add");
+            HttpPost httpPost = new HttpPost(BASE_URL + "");
             httpPost.setHeader("Content-type", "application/json");
             httpPost.setHeader("Authorization", "Bearer " + jwt);
             httpPost.setEntity(new StringEntity(objectMapper.writeValueAsString(city)));
@@ -46,7 +46,7 @@ public class CityService {
 
     public City updateCity(long cityId, City city, String jwt) throws RuntimeException {
         try {
-            HttpPatch httpPatch = new HttpPatch(BASE_URL + "/update/" + cityId);
+            HttpPut httpPatch = new HttpPut(BASE_URL + "/" + cityId);
             httpPatch.setHeader("Content-type", "application/json");
             httpPatch.setHeader("Authorization", "Bearer " + jwt);
             httpPatch.setEntity(new StringEntity(objectMapper.writeValueAsString(city)));
@@ -79,7 +79,7 @@ public class CityService {
 
     public List<City> getAllCities(String jwt) throws RuntimeException {
         try {
-            HttpGet httpGet = new HttpGet(BASE_URL + "/getAll");
+            HttpGet httpGet = new HttpGet(BASE_URL + "");
             httpGet.setHeader("Authorization", "Bearer " + jwt);
             try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
                 return objectMapper.readValue(response.getEntity().getContent(), objectMapper.getTypeFactory().constructCollectionType(List.class, City.class));
@@ -91,7 +91,7 @@ public class CityService {
 
     public void deleteCity(long cityId, String jwt) throws RuntimeException {
         try {
-            HttpDelete httpDelete = new HttpDelete(BASE_URL + "/delete/" + cityId);
+            HttpDelete httpDelete = new HttpDelete(BASE_URL+ "/" + cityId);
             httpDelete.setHeader("Authorization", "Bearer " + jwt);
             try (CloseableHttpResponse response = httpClient.execute(httpDelete)) {
                 String result = EntityUtils.toString(response.getEntity());
