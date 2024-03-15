@@ -1,7 +1,6 @@
 package org.koffa.menu;
 
-import org.koffa.model.City;
-import org.koffa.model.Employee;
+import org.koffa.model.*;
 import org.koffa.service.CityService;
 import org.koffa.service.CompanyService;
 import org.koffa.service.EmployeeService;
@@ -201,23 +200,97 @@ public class AdminMenu {
     // OK to use this for the user menu as well
 
     public void getAllEmployees() {
-
+        List<EmployeeDTO> employees = employeeService.getEmployees(JWT);
+        for (EmployeeDTO employee : employees) {
+            System.out.println(employee.toString());
+        }
     }
-
     public void deleteEmployee() {
 
-    }
+        List<EmployeeDTO> employees = employeeService.getEmployees(JWT);
+        System.out.println("Choose employee to delete");
 
+        for (EmployeeDTO employee : employees) {
+            System.out.println(employee.getId() + ". " + employee.getFirstName() + " " + employee.getLastName());
+        }
+        int input = scanner.nextInt();
+        employeeService.deleteEmployee(employees.get(input).getId(), JWT);
+
+    }
     public void getEmployeeByName() {
 
-    }
+        System.out.println("Enter employee name: ");
+        String name = scanner.next();
+        Employee employee = employeeService.getByName(name, JWT);
+        System.out.println(employee.toString());
 
+    }
     public void updateEmployee() {
 
-    }
+        List<EmployeeDTO> employees = employeeService.getEmployees(JWT);
+        System.out.println("Choose employee to update");
 
+        for (EmployeeDTO employee : employees) {
+            System.out.println(employee.getId() + ". " + employee.getFirstName() + " " + employee.getLastName());
+        }
+
+        int input = scanner.nextInt();
+        System.out.println("Enter the new first name: ");
+        String firstName = scanner.next();
+        System.out.println("Enter the new last name: ");
+        String lastName = scanner.next();
+        System.out.println("Enter the new job title: ");
+        String title = scanner.next();
+        System.out.println("Enter the new salary: ");
+        int salary = scanner.nextInt();
+        Employee updateEmployee = new Employee();
+        updateEmployee.setFirstName(firstName);
+        updateEmployee.setLastName(lastName);
+        updateEmployee.setJobTitle(title);
+        updateEmployee.setSalary(salary);
+        employeeService.updateEmployee(employees.get(input).getId(), updateEmployee, JWT);
+
+    }
     public void addEmployee() {
 
+        System.out.println("Chose a city");
+        List<City> cities = cityService.getAllCities(JWT);
+        for (City city : cities) {
+            System.out.println(city.getId() + ". " + city.getCityName());
+        }
+        int input = scanner.nextInt();
+        City city = cities.get(input);
+
+        System.out.println("Type the name of company");
+        List<CompanyDTO> companies = companyService.getCompanies(JWT);
+        for (CompanyDTO company : companies) {
+            System.out.println(company.getCompanyName());
+        }
+        String companyInput = scanner.next();
+        CompanyDTO company = companyService.getCompanyByName(companyInput, JWT);
+        Company company1 = new Company();
+        company1.setCompanyName(company.getCompanyName());
+        company1.setCity(city);
+        company1.setEmployees(new ArrayList<>());
+
+        System.out.println("Enter first name: ");
+        String firstName = scanner.next();
+        System.out.println("Enter last name: ");
+        String lastName = scanner.next();
+        System.out.println("Enter job title: ");
+        String title = scanner.next();
+        System.out.println("Enter salary: ");
+        int salary = scanner.nextInt();
+
+        Employee employee = new Employee();
+        employee.setFirstName(firstName);
+        employee.setLastName(lastName);
+        employee.setJobTitle(title);
+        employee.setSalary(salary);
+        employee.setCity(city);
+        employee.setCompany(company1);
+
+        employeeService.addEmployee(employee, JWT);
     }
     //--------------------------------------------------------------------------------
 
