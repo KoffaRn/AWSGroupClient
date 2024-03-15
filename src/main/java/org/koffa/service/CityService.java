@@ -5,13 +5,17 @@ import org.apache.hc.client5.http.classic.methods.*;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.koffa.model.City;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CityService {
 
@@ -25,18 +29,47 @@ public class CityService {
         this.objectMapper = new ObjectMapper();
     }
 
-    public City addCity(City city, String jwt) throws RuntimeException {
+    public City addCity(String cityName, String jwt) throws RuntimeException {
         try {
-            HttpPost httpPost = new HttpPost(BASE_URL + "");
-            httpPost.setHeader("Content-type", "application/json");
+            Map<String, String> cityData = new HashMap<>();
+            cityData.put("name", cityName);
+            String cityJson = objectMapper.writeValueAsString(cityData);
+
+            HttpPost httpPost = new HttpPost(BASE_URL);
             httpPost.setHeader("Authorization", "Bearer " + jwt);
-            httpPost.setEntity(new StringEntity(objectMapper.writeValueAsString(city)));
+            httpPost.setEntity(new StringEntity(cityJson, ContentType.APPLICATION_JSON));
+
             try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
-                String result = EntityUtils.toString(response.getEntity());
-                if (result.equals("City added successfully")) {
-                    return city;
+                int statusCode = response.getCode();
+                if (statusCode == 200) {
+                    System.out.println("City added successfully");
+                    return objectMapper.readValue(response.getEntity().getContent(), City.class);
                 } else {
-                    throw new RuntimeException(result);
+                    System.out.println("Failed to add city. Status code: " + statusCode);
+                    return null;
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public City updateCity(long cityId, City city, String jwt) throws RuntimeException {
+        try {
+            HttpPut httpPut = new HttpPut(BASE_URL + "/" + cityId);
+            httpPut.setHeader("Authorization", "Bearer " + jwt);
+            httpPut.setEntity(new StringEntity(objectMapper.writeValueAsString(city)));
+
+            try (CloseableHttpResponse response = httpClient.execute(httpPut)) {
+                int statusCode = response.getCode();
+                if (statusCode == HttpStatus.SC_OK) {
+                    System.out.println("City updated successfully");
+                    String result = EntityUtils.toString(response.getEntity());
+                    return objectMapper.readValue(result, City.class);
+                } else {
+                    System.out.println("Failed to update city. Status code: " + statusCode);
+                    throw new RuntimeException("Failed to update city. Status code: " + statusCode);
                 }
             }
         } catch (IOException | ParseException e) {
@@ -44,30 +77,10 @@ public class CityService {
         }
     }
 
-    public City updateCity(long cityId, City city, String jwt) throws RuntimeException {
-        try {
-            HttpPut httpPatch = new HttpPut(BASE_URL + "/" + cityId);
-            httpPatch.setHeader("Content-type", "application/json");
-            httpPatch.setHeader("Authorization", "Bearer " + jwt);
-            httpPatch.setEntity(new StringEntity(objectMapper.writeValueAsString(city)));
-            try (CloseableHttpResponse response = httpClient.execute(httpPatch)) {
-                String result = EntityUtils.toString(response.getEntity());
-                if (result.equals("City updated successfully")) {
-                    return city;
-                } else {
-                    throw new RuntimeException(result);
-                }
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
-    public City getCityByName(String cityName, String jwt) throws RuntimeException {
+    public City getCityById(int id, String jwt) throws RuntimeException {
         try {
-            HttpGet httpGet = new HttpGet(BASE_URL + "/getByName?cityName=" + cityName);
+            HttpGet httpGet = new HttpGet(BASE_URL + "/" + id);
             httpGet.setHeader("Authorization", "Bearer " + jwt);
             try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
                 return objectMapper.readValue(response.getEntity().getContent(), City.class);
@@ -79,30 +92,37 @@ public class CityService {
 
     public List<City> getAllCities(String jwt) throws RuntimeException {
         try {
-            HttpGet httpGet = new HttpGet(BASE_URL + "");
+            HttpGet httpGet = new HttpGet(BASE_URL);
             httpGet.setHeader("Authorization", "Bearer " + jwt);
             try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-                return objectMapper.readValue(response.getEntity().getContent(), objectMapper.getTypeFactory().constructCollectionType(List.class, City.class));
+                return objectMapper.
+                        readValue(response.getEntity()
+                                        .getContent(), objectMapper.getTypeFactory()
+                                        .constructCollectionType(List.class, City.class));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void deleteCity(long cityId, String jwt) throws RuntimeException {
+    public void deleteCity(int cityId, String jwt) throws RuntimeException {
         try {
-            HttpDelete httpDelete = new HttpDelete(BASE_URL+ "/" + cityId);
+            HttpDelete httpDelete = new HttpDelete(BASE_URL + "/" + cityId);
             httpDelete.setHeader("Authorization", "Bearer " + jwt);
+
             try (CloseableHttpResponse response = httpClient.execute(httpDelete)) {
-                String result = EntityUtils.toString(response.getEntity());
-                if (!result.equals("City deleted successfully")) {
-                    throw new RuntimeException(result);
+                int statusCode = response.getCode();
+                if (statusCode == 200) {
+                    System.out.println("City deleted successfully");
+                } else {
+                    System.out.println("Failed to delete city. Status code: " + statusCode);
+                    // Optionally, you can throw an exception here or handle the error accordingly.
                 }
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to delete city", e);
         }
     }
+
+
 }
