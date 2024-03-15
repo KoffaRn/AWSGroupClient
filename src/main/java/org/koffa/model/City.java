@@ -12,8 +12,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class City {
-    private long id;
+    private int cityId;
     private String cityName;
-    private List<Employee> employees;
-
+    private int id;
 }

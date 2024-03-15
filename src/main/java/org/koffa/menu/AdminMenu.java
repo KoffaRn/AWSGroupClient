@@ -6,14 +6,14 @@ import org.koffa.service.CompanyService;
 import org.koffa.service.EmployeeService;
 import org.koffa.service.UserService;
 
-import java.sql.SQLOutput;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class AdminMenu {
 
-    private final String URL = null; //Todo add URL from the properties
+    private final String URL = "http://localhost:5000"; //Todo add URL from the properties
     private final String JWT;
     private final String username;
     Scanner scanner = new Scanner(System.in);
@@ -35,7 +35,7 @@ public class AdminMenu {
 
     public void showMenu() {
         System.out.println("---------------------------------------------");
-        System.out.println("Welcome " + username + "You are logged in as an admin");
+        System.out.println("Welcome " + username + " You are logged in as an admin");
         System.out.println("1. Control Users");
         System.out.println("2. Control Companies");
         System.out.println("3. Control Employees");
@@ -66,11 +66,12 @@ public class AdminMenu {
         System.out.println("Logged out");
     }
 
+    //--------------------------------------------------------------------------------
     private void controlCitys() {
         System.out.println("--------------- Welcome to the City control ---------------");
         System.out.println("1. Add City");
         System.out.println("2. Update City");
-        System.out.println("3. Get City by name");
+        System.out.println("3. Get City by ID");
         System.out.println("4. Delete City");
         System.out.println("5. Get all Citys");
         System.out.println("6. Go back");
@@ -87,7 +88,7 @@ public class AdminMenu {
                 controlCitys();
                 break;
             case 3:
-                getCityByName();
+                getCityByID();
                 controlCitys();
                 break;
             case 4:
@@ -101,10 +102,8 @@ public class AdminMenu {
         }
     }
 
-
-
-
     // OK to use this for the user menu as well
+
     public void getAllCitys() {
 
         List<City> cities = cityService.getAllCities(JWT);
@@ -113,24 +112,39 @@ public class AdminMenu {
         }
     }
     public void deleteCity() {
-
         List<City> cities = cityService.getAllCities(JWT);
         System.out.println("Choose city to delete");
 
-        for (City city : cities) {
-            System.out.println(city.getId() + ". " + city.getCityName());
+        for (int i = 0; i < cities.size(); i++) {
+            System.out.println((i + 1) + ". " + cities.get(i).getCityName());
         }
-        int input = scanner.nextInt();
-        cityService.deleteCity(cities.get(input).getId(), JWT);
-    }
-    public void getCityByName() {
 
-        System.out.println("Enter city name: ");
-        String name = scanner.next();
-        City city = cityService.getCityByName(name, JWT);
+        int input = scanner.nextInt();
+        if (input < 1 || input > cities.size()) {
+            System.out.println("Invalid input. Please select a valid city index.");
+            return;
+        }
+
+        // Get the selected city
+        City selectedCity = cities.get(input - 1);
+        int cityIdToDelete = selectedCity.getCityId();
+
+        // Print the name of the selected city (optional)
+        System.out.println("Selected city to delete: " + selectedCity.getCityName());
+
+        // Delete the selected city
+        cityService.deleteCity(cityIdToDelete, JWT);
+    }
+
+    public void getCityByID() {
+
+        System.out.println("Enter city id: ");
+        int id = scanner.nextInt();
+        City city = cityService.getCityById(id, JWT);
         System.out.println(city.toString());
 
     }
+
     public void updateCity() {
         List<City> cities = cityService.getAllCities(JWT);
         System.out.println("Choose city to update");
@@ -139,24 +153,22 @@ public class AdminMenu {
             System.out.println(city.getId() + ". " + city.getCityName());
         }
         int input = scanner.nextInt();
+
         System.out.println("Enter the new name: ");
         String name = scanner.next();
         City updateCity = new City();
         updateCity.setCityName(name);
 
-        cityService.updateCity(cities.get(input).getId(), updateCity, JWT);
+        cityService.updateCity(cities.get(input).getCityId(), updateCity, JWT);
     }
-    public void addCity() {
+    public void addCity(){
         System.out.println("Enter city name");
         String name = scanner.next();
-        City city = new City();
-        city.setCityName(name);
-        city.setEmployees(new ArrayList<>());
-        cityService.addCity(city, JWT);
+
+        cityService.addCity(name, JWT);
     }
 
     //--------------------------------------------------------------------------------
-
 
 
     private void controlEmployees() {
@@ -192,9 +204,6 @@ public class AdminMenu {
                 controlEmployees();
                 break;
         }
-
-
-
     }
 
     // OK to use this for the user menu as well
@@ -292,6 +301,7 @@ public class AdminMenu {
 
         employeeService.addEmployee(employee, JWT);
     }
+
     //--------------------------------------------------------------------------------
 
     private void controlCompanies() {
@@ -301,13 +311,55 @@ public class AdminMenu {
         System.out.println("2. Update Company");
         System.out.println("3. Get Company by name");
         System.out.println("4. Delete Company");
-        System.out.println("5. Delete Company");
+        System.out.println("5. Get all Company");
         System.out.println("6. Go back");
         int input = scanner.nextInt();
         if (input == 6) showMenu();
 
+        switch (input){
+            case 1:
+                addCompany();
+                controlCompanies();
+                break;
+            case 2:
+                updateCompany();
+                controlCompanies();
+                break;
+            case 3:
+                getCompanyByName();
+                controlCompanies();
+                break;
+            case 4:
+                deleteCompany();
+                controlCompanies();
+                break;
+            case 5:
+                getAllCompanies();
+                controlCompanies();
+                break;
+        }
+    }
+
+    private void getAllCompanies() {
 
     }
+
+    private void deleteCompany() {
+
+    }
+
+    private void getCompanyByName() {
+
+    }
+
+    private void updateCompany() {
+
+    }
+
+    private void addCompany() {
+
+    }
+
 
     private void controlUsers() {
 

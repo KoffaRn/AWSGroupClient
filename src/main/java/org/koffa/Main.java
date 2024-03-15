@@ -1,18 +1,19 @@
 package org.koffa;
 
+import org.koffa.menu.AdminMenu;
 import org.koffa.menu.UserIdentity;
 import org.koffa.model.User;
 
 public class Main {
     public static void main(String[] args) {
 
-        UserIdentity adminMenu = new UserIdentity();
+        UserIdentity auth = new UserIdentity();
 
+        System.out.println(auth.getToken());
 
-        System.out.println(adminMenu.getUsername());
-        System.out.println(adminMenu.getToken());
-        System.out.println(adminMenu.isAdmin());
+        AdminMenu adminMenu1 = new AdminMenu(auth.getToken(), auth.getUsername());
 
+        adminMenu1.showMenu();
 
 
     }
