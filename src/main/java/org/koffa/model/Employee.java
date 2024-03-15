@@ -14,7 +14,7 @@ public class Employee {
     private String firstName;
     private String lastName;
     private String jobTitle;
-    private int salary;
+    private double salary;
     private Company company;
     private City city;
 }

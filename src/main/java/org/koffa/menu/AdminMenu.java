@@ -211,7 +211,7 @@ public class AdminMenu {
     public void getAllEmployees() {
         List<EmployeeDTO> employees = employeeService.getEmployees(JWT);
         for (EmployeeDTO employee : employees) {
-            System.out.println(employee.toString());
+            System.out.println(employee.getFirstName() + " " + employee.getLastName());
         }
     }
     public void deleteEmployee() {
@@ -291,7 +291,7 @@ public class AdminMenu {
         System.out.println("Enter job title: ");
         String title = scanner.next();
         System.out.println("Enter salary: ");
-        int salary = scanner.nextInt();
+        double salary = scanner.nextInt();
 
         Employee employee = new Employee();
         employee.setFirstName(firstName);
@@ -303,7 +303,7 @@ public class AdminMenu {
 
         System.out.println(employee.toString());
 
-        //employeeService.addEmployee(employee, JWT);
+        employeeService.addEmployee(employee, JWT);
     }
 
     //--------------------------------------------------------------------------------
