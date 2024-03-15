@@ -6,9 +6,11 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.koffa.model.LoginResponse;
 import org.koffa.model.RegistrationPayload;
+import org.koffa.model.User;
 
 import java.io.IOException;
 
@@ -44,7 +46,7 @@ public class AuthService {
             httpPost.setEntity(new StringEntity(new Gson().toJson(payload)));
             try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
                 int status = response.getCode();
-                String result = response.getEntity().toString();
+                String result = EntityUtils.toString(response.getEntity());
                 if (status == HttpStatus.SC_OK) {
                     return new Gson().fromJson(result, LoginResponse.class);
                 } else {
