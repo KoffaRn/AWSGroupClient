@@ -3,6 +3,7 @@ package org.koffa.menu;
 import org.koffa.service.CityService;
 import org.koffa.service.CompanyService;
 import org.koffa.service.EmployeeService;
+import org.koffa.service.UserService;
 
 import java.sql.SQLOutput;
 import java.util.Scanner;
@@ -106,6 +107,7 @@ public class AdminMenu {
     }
 
     private void controlUsers() {
+        UserService userService = new UserService(URL);
         System.out.println("--------------- Welcome to the User control ---------------");
         System.out.println("1. Add User");
         System.out.println("2. Update User");
