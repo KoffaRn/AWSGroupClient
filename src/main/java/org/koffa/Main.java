@@ -8,11 +8,12 @@ public class Main {
 
         UserIdentity adminMenu = new UserIdentity();
 
-        String jwt = adminMenu.getUserResponse().getJwt();
-        System.out.println(jwt);
 
-        User user = adminMenu.getUserResponse().getUser();
-        System.out.println(user.authorities.get(0).getAuthority());
+        System.out.println(adminMenu.getUsername());
+        System.out.println(adminMenu.getToken());
+        System.out.println(adminMenu.isAdmin());
+
+
 
     }
 }

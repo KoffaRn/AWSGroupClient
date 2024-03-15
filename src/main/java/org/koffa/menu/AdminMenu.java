@@ -15,13 +15,13 @@ public class AdminMenu {
 
 
     public void showMenu() {
+        System.out.println("---------------------------------------------");
         System.out.println("Welcome " + username + "You are logged in as an admin");
         System.out.println("1. Control Users");
         System.out.println("2. Control Companies");
         System.out.println("3. Control Employees");
         System.out.println("4. Control Citys");
         System.out.println("5. Logout");
-        System.out.println("6. Go back: ");
         int input = scanner.nextInt();
         switch (input) {
             case 1:
@@ -39,9 +39,6 @@ public class AdminMenu {
             case 5:
                 logout();
                 break;
-            case 6:
-                showMenu();
-                break;
         }
         
         
@@ -50,6 +47,8 @@ public class AdminMenu {
     }
 
     private void logout() {
+        System.exit(0);
+        System.out.println("Logged out");
     }
 
     private void controlCitys() {
