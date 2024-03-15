@@ -211,7 +211,7 @@ public class AdminMenu {
     public void getAllEmployees() {
         List<EmployeeDTO> employees = employeeService.getEmployees(JWT);
         for (EmployeeDTO employee : employees) {
-            System.out.println(employee.getFirstName() + " " + employee.getLastName());
+            System.out.println(employee.toString());
         }
     }
     public void deleteEmployee() {
