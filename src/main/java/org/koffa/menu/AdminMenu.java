@@ -1,11 +1,15 @@
 package org.koffa.menu;
 
+import org.koffa.model.City;
+import org.koffa.model.Employee;
 import org.koffa.service.CityService;
 import org.koffa.service.CompanyService;
 import org.koffa.service.EmployeeService;
 import org.koffa.service.UserService;
 
 import java.sql.SQLOutput;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class AdminMenu {
@@ -14,11 +18,19 @@ public class AdminMenu {
     private final String JWT;
     private final String username;
     Scanner scanner = new Scanner(System.in);
+
+    private UserService userService;
+    private CompanyService companyService;
+    private EmployeeService employeeService;
+    private CityService cityService;
     
     public AdminMenu (String JWT, String username) {
         this.JWT = JWT;
         this.username = username;
-        
+        this.cityService = new CityService(URL);
+        this.employeeService = new EmployeeService(URL);
+        this.companyService = new CompanyService(URL);
+        this.userService = new UserService(URL);
     }
 
 
@@ -48,10 +60,6 @@ public class AdminMenu {
                 logout();
                 break;
         }
-        
-        
-        
-        
     }
 
     private void logout() {
@@ -60,7 +68,6 @@ public class AdminMenu {
     }
 
     private void controlCitys() {
-        CityService cityService = new CityService(URL);
         System.out.println("--------------- Welcome to the City control ---------------");
         System.out.println("1. Add City");
         System.out.println("2. Update City");
@@ -71,12 +78,92 @@ public class AdminMenu {
         int input = scanner.nextInt();
         if (input == 6) showMenu();
 
+        switch (input){
+            case 1:
+                addCity();
+                controlCitys();
+                break;
+            case 2:
+                updateCity();
+                controlCitys();
+                break;
+            case 3:
+                getCityByName();
+                controlCitys();
+                break;
+            case 4:
+                deleteCity();
+                controlCitys();
+                break;
+            case 5:
+                getAllCitys();
+                controlCitys();
+                break;
+        }
+    }
+
+
+
+
+    // OK to use this for the user menu as well
+    private void getAllCitys() {
+
+        List<City> cities = cityService.getAllCities(JWT);
+        for (City city : cities) {
+            System.out.println(city.toString());
+        }
+    }
+    private void deleteCity() {
+
+        List<City> cities = cityService.getAllCities(JWT);
+        System.out.println("Choose city to delete");
+
+        for (City city : cities) {
+            System.out.println(city.getId() + ". " + city.getCityName());
+        }
+        int input = scanner.nextInt();
+        cityService.deleteCity(cities.get(input).getId(), JWT);
+    }
+
+    private void getCityByName() {
+
+        System.out.println("Enter city name: ");
+        String name = scanner.next();
+        City city = cityService.getCityByName(name, JWT);
+        System.out.println(city.toString());
 
     }
 
-    private void controlEmployees() {
+    private void updateCity() {
+        List<City> cities = cityService.getAllCities(JWT);
+        System.out.println("Choose city to update");
 
-        EmployeeService employeeService = new EmployeeService(URL);
+        for (City city : cities) {
+            System.out.println(city.getId() + ". " + city.getCityName());
+        }
+        int input = scanner.nextInt();
+        System.out.println("Enter the new name: ");
+        String name = scanner.next();
+        City updateCity = new City();
+        updateCity.setCityName(name);
+
+        cityService.updateCity(cities.get(input).getId(), updateCity, JWT);
+    }
+
+    private void addCity() {
+        System.out.println("Enter city name");
+        String name = scanner.next();
+        City city = new City();
+        city.setCityName(name);
+        city.setEmployees(new ArrayList<>());
+        cityService.addCity(city, JWT);
+    }
+
+    //--------------------------------------------------------------------------------
+
+
+
+    private void controlEmployees() {
         System.out.println("--------------- Welcome to the Employee control ---------------");
         System.out.println("1. Add Employee");
         System.out.println("2. Update Employee");
@@ -91,7 +178,7 @@ public class AdminMenu {
     }
 
     private void controlCompanies() {
-        CompanyService companyService = new CompanyService(URL);
+
         System.out.println("--------------- Welcome to the Company control ---------------");
         System.out.println("1. Add Company");
         System.out.println("2. Update Company");
@@ -103,11 +190,10 @@ public class AdminMenu {
         if (input == 6) showMenu();
 
 
-
     }
 
     private void controlUsers() {
-        UserService userService = new UserService(URL);
+
         System.out.println("--------------- Welcome to the User control ---------------");
         System.out.println("1. Add User");
         System.out.println("2. Update User");
