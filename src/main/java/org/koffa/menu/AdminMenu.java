@@ -106,14 +106,14 @@ public class AdminMenu {
 
 
     // OK to use this for the user menu as well
-    private void getAllCitys() {
+    public void getAllCitys() {
 
         List<City> cities = cityService.getAllCities(JWT);
         for (City city : cities) {
             System.out.println(city.toString());
         }
     }
-    private void deleteCity() {
+    public void deleteCity() {
 
         List<City> cities = cityService.getAllCities(JWT);
         System.out.println("Choose city to delete");
@@ -124,8 +124,7 @@ public class AdminMenu {
         int input = scanner.nextInt();
         cityService.deleteCity(cities.get(input).getId(), JWT);
     }
-
-    private void getCityByName() {
+    public void getCityByName() {
 
         System.out.println("Enter city name: ");
         String name = scanner.next();
@@ -133,8 +132,7 @@ public class AdminMenu {
         System.out.println(city.toString());
 
     }
-
-    private void updateCity() {
+    public void updateCity() {
         List<City> cities = cityService.getAllCities(JWT);
         System.out.println("Choose city to update");
 
@@ -149,8 +147,7 @@ public class AdminMenu {
 
         cityService.updateCity(cities.get(input).getId(), updateCity, JWT);
     }
-
-    private void addCity() {
+    public void addCity() {
         System.out.println("Enter city name");
         String name = scanner.next();
         City city = new City();
@@ -174,8 +171,55 @@ public class AdminMenu {
         int input = scanner.nextInt();
         if (input == 6) showMenu();
 
+        switch (input){
+            case 1:
+                addEmployee();
+                controlEmployees();
+                break;
+            case 2:
+                updateEmployee();
+                controlEmployees();
+                break;
+            case 3:
+                getEmployeeByName();
+                controlEmployees();
+                break;
+            case 4:
+                deleteEmployee();
+                controlEmployees();
+                break;
+            case 5:
+                getAllEmployees();
+                controlEmployees();
+                break;
+        }
+
+
 
     }
+
+    // OK to use this for the user menu as well
+
+    public void getAllEmployees() {
+
+    }
+
+    public void deleteEmployee() {
+
+    }
+
+    public void getEmployeeByName() {
+
+    }
+
+    public void updateEmployee() {
+
+    }
+
+    public void addEmployee() {
+
+    }
+    //--------------------------------------------------------------------------------
 
     private void controlCompanies() {
 
