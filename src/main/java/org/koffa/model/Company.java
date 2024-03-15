@@ -12,5 +12,5 @@ public class Company {
     private int companyId;
     private String companyName;
     private City city;
-    private ArrayList<EmployeeDTO> employees;
+    private ArrayList<String> employees;
 }

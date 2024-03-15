@@ -211,7 +211,7 @@ public class AdminMenu {
     public void getAllEmployees() {
         List<EmployeeDTO> employees = employeeService.getEmployees(JWT);
         for (EmployeeDTO employee : employees) {
-            System.out.println(employee.toString());
+            System.out.println(employee.getFirstName() + " " + employee.getLastName());
         }
     }
     public void deleteEmployee() {
@@ -269,14 +269,16 @@ public class AdminMenu {
         }
         int input = scanner.nextInt();
         City city = cities.get(input);
+        System.out.println("You chose: " + city.getCityName());
 
-        System.out.println("Type the name of company");
+        System.out.println("Type the name of company\n");
         List<CompanyDTO> companies = companyService.getCompanies(JWT);
         for (CompanyDTO company : companies) {
             System.out.println(company.getCompanyName());
         }
         String companyInput = scanner.next();
         CompanyDTO company = companyService.getCompanyByName(companyInput, JWT);
+        System.out.println("You chose: " + company.getCompanyName());
         Company company1 = new Company();
         company1.setCompanyName(company.getCompanyName());
         company1.setCity(city);
@@ -289,7 +291,7 @@ public class AdminMenu {
         System.out.println("Enter job title: ");
         String title = scanner.next();
         System.out.println("Enter salary: ");
-        int salary = scanner.nextInt();
+        double salary = scanner.nextInt();
 
         Employee employee = new Employee();
         employee.setFirstName(firstName);
@@ -298,6 +300,8 @@ public class AdminMenu {
         employee.setSalary(salary);
         employee.setCity(city);
         employee.setCompany(company1);
+
+        System.out.println(employee.toString());
 
         employeeService.addEmployee(employee, JWT);
     }
