@@ -269,14 +269,16 @@ public class AdminMenu {
         }
         int input = scanner.nextInt();
         City city = cities.get(input);
+        System.out.println("You chose: " + city.getCityName());
 
-        System.out.println("Type the name of company");
+        System.out.println("Type the name of company\n");
         List<CompanyDTO> companies = companyService.getCompanies(JWT);
         for (CompanyDTO company : companies) {
             System.out.println(company.getCompanyName());
         }
         String companyInput = scanner.next();
         CompanyDTO company = companyService.getCompanyByName(companyInput, JWT);
+        System.out.println("You chose: " + company.getCompanyName());
         Company company1 = new Company();
         company1.setCompanyName(company.getCompanyName());
         company1.setCity(city);
@@ -299,7 +301,9 @@ public class AdminMenu {
         employee.setCity(city);
         employee.setCompany(company1);
 
-        employeeService.addEmployee(employee, JWT);
+        System.out.println(employee.toString());
+
+        //employeeService.addEmployee(employee, JWT);
     }
 
     //--------------------------------------------------------------------------------
