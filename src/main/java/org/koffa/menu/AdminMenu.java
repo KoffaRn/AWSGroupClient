@@ -3,6 +3,8 @@ package org.koffa.menu;
 import java.util.Scanner;
 
 public class AdminMenu {
+
+    private final String URL = null; //Todo add URL from the properties
     private final String JWT;
     private final String username;
     Scanner scanner = new Scanner(System.in);
