@@ -211,7 +211,7 @@ public class AdminMenu {
     public void getAllEmployees() {
         List<EmployeeDTO> employees = employeeService.getEmployees(JWT);
         for (EmployeeDTO employee : employees) {
-            System.out.println(employee.toString());
+            System.out.println(employee.getFirstName());
         }
     }
     public void deleteEmployee() {
@@ -262,27 +262,36 @@ public class AdminMenu {
     }
     public void addEmployee() {
 
-        System.out.println("Chose a city");
+        System.out.println("Choose a city:");
         List<City> cities = cityService.getAllCities(JWT);
         for (City city : cities) {
-            System.out.println(city.getId() + ". " + city.getCityName());
+            System.out.println(city.getCityId() + ". " + city.getCityName());
         }
-        int input = scanner.nextInt();
-        City city = cities.get(input);
-        System.out.println("You chose: " + city.getCityName());
+        int cityInput = scanner.nextInt() - 1;
+        if (cityInput < 0 || cityInput >= cities.size()) {
+            System.out.println("Invalid city choice.");
+            return;
+        }
+        City selectedCity = cities.get(cityInput);
+        System.out.println("You chose: " + selectedCity.getCityName());
 
-        System.out.println("Type the name of company\n");
+        // Choose a company
+        System.out.println("Type the name of the company:");
         List<CompanyDTO> companies = companyService.getCompanies(JWT);
         for (CompanyDTO company : companies) {
-            System.out.println(company.getCompanyName());
+            System.out.println(company.getCompanyId() + ". " + company.getCompanyName());
         }
-        String companyInput = scanner.next();
-        CompanyDTO company = companyService.getCompanyByName(companyInput, JWT);
-        System.out.println("You chose: " + company.getCompanyName());
-        Company company1 = new Company();
-        company1.setCompanyName(company.getCompanyName());
-        company1.setCity(city);
-        company1.setEmployees(new ArrayList<>());
+        int companyInput = scanner.nextInt() - 1;
+        if (companyInput < 0 || companyInput >= companies.size()) {
+            System.out.println("Invalid company choice.");
+            return;
+        }
+        CompanyDTO selectedCompany = companies.get(companyInput);
+        Company company = new Company();
+        company.setCompanyName(selectedCompany.getCompanyName());
+        company.setCity(selectedCity);
+        company.setEmployees(new ArrayList<>());
+        System.out.println("You chose: " + selectedCompany.getCompanyName());
 
         System.out.println("Enter first name: ");
         String firstName = scanner.next();
@@ -291,15 +300,15 @@ public class AdminMenu {
         System.out.println("Enter job title: ");
         String title = scanner.next();
         System.out.println("Enter salary: ");
-        double salary = scanner.nextInt();
+        int salary = scanner.nextInt();
 
         Employee employee = new Employee();
         employee.setFirstName(firstName);
         employee.setLastName(lastName);
         employee.setJobTitle(title);
         employee.setSalary(salary);
-        employee.setCity(city);
-        employee.setCompany(company1);
+        employee.setCity(selectedCity);
+        employee.setCompany(company);
 
         System.out.println(employee.toString());
 
