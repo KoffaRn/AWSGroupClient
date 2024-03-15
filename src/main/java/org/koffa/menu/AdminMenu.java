@@ -5,8 +5,6 @@ import org.koffa.service.CityService;
 import org.koffa.service.CompanyService;
 import org.koffa.service.EmployeeService;
 import org.koffa.service.UserService;
-
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -66,6 +64,7 @@ public class AdminMenu {
         System.out.println("Logged out");
     }
 
+    //--------------------------------------------------------------------------------
     private void controlCitys() {
         System.out.println("--------------- Welcome to the City control ---------------");
         System.out.println("1. Add City");
@@ -101,10 +100,8 @@ public class AdminMenu {
         }
     }
 
-
-
-
     // OK to use this for the user menu as well
+
     public void getAllCitys() {
 
         List<City> cities = cityService.getAllCities(JWT);
@@ -158,7 +155,6 @@ public class AdminMenu {
     //--------------------------------------------------------------------------------
 
 
-
     private void controlEmployees() {
         System.out.println("--------------- Welcome to the Employee control ---------------");
         System.out.println("1. Add Employee");
@@ -192,9 +188,6 @@ public class AdminMenu {
                 controlEmployees();
                 break;
         }
-
-
-
     }
 
     // OK to use this for the user menu as well
@@ -292,6 +285,7 @@ public class AdminMenu {
 
         employeeService.addEmployee(employee, JWT);
     }
+
     //--------------------------------------------------------------------------------
 
     private void controlCompanies() {
@@ -306,8 +300,50 @@ public class AdminMenu {
         int input = scanner.nextInt();
         if (input == 6) showMenu();
 
+        switch (input){
+            case 1:
+                addCompany();
+                controlCompanies();
+                break;
+            case 2:
+                updateCompany();
+                controlCompanies();
+                break;
+            case 3:
+                getCompanyByName();
+                controlCompanies();
+                break;
+            case 4:
+                deleteCompany();
+                controlCompanies();
+                break;
+            case 5:
+                getAllCompanies();
+                controlCompanies();
+                break;
+        }
+    }
+
+    private void getAllCompanies() {
 
     }
+
+    private void deleteCompany() {
+
+    }
+
+    private void getCompanyByName() {
+
+    }
+
+    private void updateCompany() {
+
+    }
+
+    private void addCompany() {
+
+    }
+
 
     private void controlUsers() {
 
