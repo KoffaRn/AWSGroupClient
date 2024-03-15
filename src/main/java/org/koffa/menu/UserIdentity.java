@@ -40,6 +40,13 @@ public class UserIdentity {
             String password = scan.next();
             RegistrationPayload payload = new RegistrationPayload(username, password);
             authService.register(payload);
+
+            System.out.println("User registered successfully\nYour are logged in as " + username);
+
+            LoginResponse loginResponse =
+                    authService.login(new RegistrationPayload(username, password));
+
+            this.userResponse = loginResponse;
         }
     }
 

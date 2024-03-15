@@ -1,8 +1,16 @@
 package org.koffa.menu;
 
+import org.koffa.service.CityService;
+import org.koffa.service.CompanyService;
+import org.koffa.service.EmployeeService;
+import org.koffa.service.UserService;
+
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class AdminMenu {
+
+    private final String URL = null; //Todo add URL from the properties
     private final String JWT;
     private final String username;
     Scanner scanner = new Scanner(System.in);
@@ -52,15 +60,66 @@ public class AdminMenu {
     }
 
     private void controlCitys() {
+        CityService cityService = new CityService(URL);
+        System.out.println("--------------- Welcome to the City control ---------------");
+        System.out.println("1. Add City");
+        System.out.println("2. Update City");
+        System.out.println("3. Get City by name");
+        System.out.println("4. Delete City");
+        System.out.println("5. Get all Citys");
+        System.out.println("6. Go back");
+        int input = scanner.nextInt();
+        if (input == 6) showMenu();
+
+
     }
 
     private void controlEmployees() {
+
+        EmployeeService employeeService = new EmployeeService(URL);
+        System.out.println("--------------- Welcome to the Employee control ---------------");
+        System.out.println("1. Add Employee");
+        System.out.println("2. Update Employee");
+        System.out.println("3. Get Employee by name");
+        System.out.println("4. Delete Employee");
+        System.out.println("5. Get all Employees");
+        System.out.println("6. Go back");
+        int input = scanner.nextInt();
+        if (input == 6) showMenu();
+
+
     }
 
     private void controlCompanies() {
+        CompanyService companyService = new CompanyService(URL);
+        System.out.println("--------------- Welcome to the Company control ---------------");
+        System.out.println("1. Add Company");
+        System.out.println("2. Update Company");
+        System.out.println("3. Get Company by name");
+        System.out.println("4. Delete Company");
+        System.out.println("5. Delete Company");
+        System.out.println("6. Go back");
+        int input = scanner.nextInt();
+        if (input == 6) showMenu();
+
+
+
     }
 
     private void controlUsers() {
+        UserService userService = new UserService(URL);
+        System.out.println("--------------- Welcome to the User control ---------------");
+        System.out.println("1. Add User");
+        System.out.println("2. Update User");
+        System.out.println("3. Get User by name");
+        System.out.println("4. Update User");
+        System.out.println("5. Delete User");
+        System.out.println("6. Go back");
+        int input = scanner.nextInt();
+        if (input == 6) showMenu();
+
+
+
     }
 
 
