@@ -42,4 +42,14 @@ public class UserIdentity {
             authService.register(payload);
         }
     }
+
+    public String getUsername() {
+        return userResponse.getUser().username;
+    }
+    public String getToken() {
+        return userResponse.getJwt();
+    }
+    public boolean isAdmin() {
+        return userResponse.getUser().authorities.get(0).getAuthority().equals("ADMIN");
+    }
 }
