@@ -51,12 +51,12 @@ public class UserIdentity {
     }
 
     public String getUsername() {
-        return userResponse.getUser().username;
+        return userResponse.getUser().getUsername();
     }
     public String getToken() {
         return userResponse.getJwt();
     }
     public boolean isAdmin() {
-        return userResponse.getUser().authorities.get(0).getAuthority().equals("ADMIN");
+        return userResponse.getUser().getAuthorities().get(0).getAuthority().equals("ADMIN");
     }
 }

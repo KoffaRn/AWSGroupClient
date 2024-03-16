@@ -1,5 +1,9 @@
 package org.koffa.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.apache.hc.client5.http.classic.methods.*;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
@@ -10,9 +14,12 @@ import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.koffa.model.User;
 
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class UserService {
@@ -23,18 +30,27 @@ public class UserService {
         this.BASE_URL = baseUrl + "/user";
         this.httpClient = HttpClients.createDefault();
     }
-
-    public String getAllUsers(String jwt) {
+    public List<User> getAllUsers(String jwt) {
         try {
             HttpGet request = new HttpGet(BASE_URL);
             request.setHeader("Authorization", "Bearer " + jwt);
             try (CloseableHttpResponse response = httpClient.execute(request)) {
-                return handleResponse(response);
+                int statusCode = response.getCode();
+                if (statusCode == HttpStatus.SC_OK) {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String jsonResponse = EntityUtils.toString(response.getEntity());
+                    return objectMapper.readValue(jsonResponse, new TypeReference<List<User>>() {});
+                } else {
+                    throw new RuntimeException("Failed to fetch users. Status code: " + statusCode);
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
-        } catch (IOException | ParseException e) {
-            throw new RuntimeException("Failed to fetch users.", e);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to execute HTTP request or read response.", e);
         }
     }
+
 
     public String getUserById(Long id, String jwt) {
         try {

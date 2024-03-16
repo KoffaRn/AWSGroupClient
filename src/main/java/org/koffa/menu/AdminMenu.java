@@ -421,16 +421,62 @@ public class AdminMenu {
     private void controlUsers() {
 
         System.out.println("--------------- Welcome to the User control ---------------");
-        System.out.println("1. Add User");
-        System.out.println("2. Update User");
-        System.out.println("3. Get User by name");
-        System.out.println("4. Update User");
-        System.out.println("5. Delete User");
+        System.out.println("1. Get by ID");
+        System.out.println("2. Delete User");
+        System.out.println("3. Update User");
+        System.out.println("4. Update Role");
+        System.out.println("5. Get all Users");
         System.out.println("6. Go back");
         int input = scanner.nextInt();
         if (input == 6) showMenu();
 
+        switch (input){
+            case 1:
+                getUserById();
+                controlUsers();
+                break;
+            case 2:
+                deleteUser();
+                controlUsers();
+                break;
+            case 3:
+                updateUser();
+                controlUsers();
+                break;
+            case 4:
+                updateRole();
+                controlUsers();
+                break;
+            case 5:
+                getAllUsers();
+                controlUsers();
+                break;
+        }
 
+
+    }
+
+    public void getAllUsers() {
+
+        List<User> users = userService.getAllUsers(JWT);
+        for (User user : users) {
+            System.out.println(user.getUserId() + ". " + user.getUsername());
+        }
+    }
+
+    private void updateRole() {
+
+    }
+
+    private void updateUser() {
+
+    }
+
+    private void deleteUser() {
+
+    }
+
+    private void getUserById() {
 
     }
 
