@@ -349,6 +349,8 @@ public class AdminMenu {
         }
     }
 
+    // OK to use this for the user menu as well
+
     private void getAllCompanies() {
 
         List<CompanyDTO> companies = companyService.getCompanies(JWT);
@@ -415,6 +417,7 @@ public class AdminMenu {
     }
 
 
+    //--------------------------------------------------------------------------------
     private void controlUsers() {
 
         System.out.println("--------------- Welcome to the User control ---------------");
