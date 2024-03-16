@@ -351,9 +351,25 @@ public class AdminMenu {
 
     private void getAllCompanies() {
 
+        List<CompanyDTO> companies = companyService.getCompanies(JWT);
+        for (CompanyDTO company : companies) {
+            System.out.println(company.getCompanyName());
+        }
+
     }
 
     private void deleteCompany() {
+
+        List<CompanyDTO> companies = companyService.getCompanies(JWT);
+        System.out.println("Choose company to delete");
+
+        for (CompanyDTO company : companies) {
+            System.out.println(company.getCompanyId() + ". " + company.getCompanyName());
+        }
+        int input = scanner.nextInt() -1;
+        companyService.deleteCompany(companies.get(input).getCompanyId(), JWT);
+
+        System.out.println("Company deleted.");
 
     }
 
@@ -366,6 +382,30 @@ public class AdminMenu {
     }
 
     private void addCompany() {
+
+        System.out.println("Enter company name");
+        String name = scanner.next();
+        System.out.println("Choose a city:");
+        List<City> cities = cityService.getAllCities(JWT);
+        for (City city : cities) {
+            System.out.println(city.getCityId() + ". " + city.getCityName());
+        }
+        int cityInput = scanner.nextInt() - 1;
+        if (cityInput < 0 || cityInput >= cities.size()) {
+            System.out.println("Invalid city choice.");
+            return;
+        }
+        City selectedCity = cities.get(cityInput);
+        System.out.println("You chose: " + selectedCity.getCityName());
+
+        CompanyDTO company = new CompanyDTO();
+        company.setCompanyName(name);
+        company.setCity(selectedCity);
+        ArrayList<Employee> employees = new ArrayList<>();
+        company.setEmployees(employees);
+
+        System.out.println("Test here");
+        companyService.addCompany(company, JWT);
 
     }
 
