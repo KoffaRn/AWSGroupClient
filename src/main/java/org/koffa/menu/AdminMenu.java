@@ -150,17 +150,20 @@ public class AdminMenu {
         List<City> cities = cityService.getAllCities(JWT);
         System.out.println("Choose city to update");
 
+        int i = 1;
         for (City city : cities) {
-            System.out.println(city.getId() + ". " + city.getCityName());
+            System.out.println(i++ + ". " + city.getCityName());
         }
-        int input = scanner.nextInt();
+        int input = scanner.nextInt() -1;
 
+        System.out.println("You chose: " + cities.get(input).getCityName());
         System.out.println("Enter the new name: ");
         String name = scanner.next();
-        City updateCity = new City();
+        CityToSendForUpdate updateCity = new CityToSendForUpdate();
+        updateCity.setCityId(cities.get(input).getCityId());
         updateCity.setCityName(name);
 
-        cityService.updateCity(cities.get(input).getCityId(), updateCity, JWT);
+        cityService.updateCity(updateCity, JWT);
     }
     public void addCity(){
         System.out.println("Enter city name");
@@ -220,12 +223,13 @@ public class AdminMenu {
         List<EmployeeDTO> employees = employeeService.getEmployees(JWT);
         System.out.println("Choose employee to delete");
 
+        int i = 1;
         for (EmployeeDTO employee : employees) {
-            System.out.println(employee.getId() + ". " + employee.getFirstName() + " " + employee.getLastName());
+            System.out.println(i++ + ". " + employee.getFirstName() + " " + employee.getLastName());
         }
-        int input = scanner.nextInt();
+        int input = scanner.nextInt() -1;
         employeeService.deleteEmployee(employees.get(input).getId(), JWT);
-
+        System.out.println("Employee: "+ employees.get(input).getFirstName() + " deleted.");
     }
     public void getEmployeeByName() {
 
@@ -265,8 +269,9 @@ public class AdminMenu {
 
         System.out.println("Choose a city:");
         List<City> cities = cityService.getAllCities(JWT);
+        int j = 1;
         for (City city : cities) {
-            System.out.println(city.getCityId() + ". " + city.getCityName());
+            System.out.println(j++ + ". " + city.getCityName());
         }
         int cityInput = scanner.nextInt() - 1;
         if (cityInput < 0 || cityInput >= cities.size()) {
@@ -279,8 +284,9 @@ public class AdminMenu {
         // Choose a company
         System.out.println("Choose a company:");
         List<CompanyDTO> companies = companyService.getCompanies(JWT);
+        int i = 1;
         for (CompanyDTO company : companies) {
-            System.out.println(company.getCompanyId() + ". " + company.getCompanyName());
+            System.out.println(i++ + ". " + company.getCompanyName());
         }
         int companyInput = scanner.nextInt() - 1;
         if (companyInput < 0 || companyInput >= companies.size()) {
@@ -366,8 +372,10 @@ public class AdminMenu {
         List<CompanyDTO> companies = companyService.getCompanies(JWT);
         System.out.println("Choose company to delete");
 
+        int i = 1;
+
         for (CompanyDTO company : companies) {
-            System.out.println(company.getCompanyId() + ". " + company.getCompanyName());
+            System.out.println(i++ + ". " + company.getCompanyName());
         }
         int input = scanner.nextInt() -1;
         companyService.deleteCompany(companies.get(input).getCompanyId(), JWT);
