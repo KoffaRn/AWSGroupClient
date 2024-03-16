@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,5 +14,5 @@ public class Company {
     private int companyId;
     private String companyName;
     private City city;
-    private ArrayList<String> employees;
+    private List<Employee> employees;
 }

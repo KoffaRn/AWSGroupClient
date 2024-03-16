@@ -5,19 +5,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class Employee {
-    private int employeeId;
+    private long employeeId;
     private String firstName;
     private String lastName;
     private String jobTitle;
-    private int salary;
-    private Company company;
+    private double salary;
     private City city;
+    private Company company;
 
+    List<User> users;
 
 
     @Override
@@ -28,10 +30,10 @@ public class Employee {
         sb.append("Last Name: ").append(lastName).append("\n");
         sb.append("Job Title: ").append(jobTitle).append("\n");
         sb.append("Salary: ").append(salary).append("\n");
-        sb.append("Company: ").append(company).append("\n");
         sb.append("City: ").append(city).append("\n");
         return sb.toString();
     }
 }
+
 
 
