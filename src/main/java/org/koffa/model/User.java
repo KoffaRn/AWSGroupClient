@@ -20,4 +20,16 @@ public class User {
     public boolean accountNonLocked;
     public boolean accountNonExpired;
     public boolean credentialsNonExpired;
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("User ID: ").append(userId).append("\n");
+        sb.append("Username: ").append(username).append("\n");
+        sb.append("Authorities: ").append(authorities).append("\n");
+        sb.append("Company: ").append(company).append("\n");
+        sb.append("City: ").append(city).append("\n");
+        sb.append("Employee: ").append(employee).append("\n");
+        return sb.toString();
+    }
 }

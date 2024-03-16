@@ -55,12 +55,17 @@ public class UserService {
     }
 
 
-    public String getUserById(Long id, String jwt) {
+    public User getUserById(Long id, String jwt) {
         try {
             HttpGet request = new HttpGet(BASE_URL + "/" + id);
             request.setHeader("Authorization", "Bearer " + jwt);
             try (CloseableHttpResponse response = httpClient.execute(request)) {
-                return handleResponse(response);
+                int statusCode = response.getCode();
+                if (statusCode == HttpStatus.SC_OK) {
+                    return new ObjectMapper().readValue(EntityUtils.toString(response.getEntity()), User.class);
+                } else {
+                    throw new RuntimeException("Failed to fetch user. Status code: " + statusCode);
+                }
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }

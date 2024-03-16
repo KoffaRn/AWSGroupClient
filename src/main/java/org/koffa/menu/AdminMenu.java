@@ -514,9 +514,30 @@ public class AdminMenu {
 
     private void deleteUser() {
 
+        List<User> users = userService.getAllUsers(JWT);
+        System.out.println("Choose user to Delete:");
+        int i = 1;
+        for (User user : users) {
+            System.out.println(i++ + ". " + user.getUsername() + " - " + user.getAuthorities().get(0).getAuthority());
+
+        }
+        int userIdIndex = scanner.nextInt() - 1;
+        if (userIdIndex < 0 || userIdIndex >= users.size()) {
+            System.out.println("Invalid user index. Please select a valid user.");
+            return;
+        }
+        User user = users.get(userIdIndex);
+        userService.deleteUser((long) user.getUserId(), JWT);
+        System.out.println("User deleted successfully.");
+
+
     }
 
     private void getUserById() {
+        System.out.println("Enter user ID: ");
+        int id = scanner.nextInt();
+        User user = userService.getUserById(Long.valueOf(id), JWT);
+        System.out.println(user.toString());
 
     }
 
