@@ -11,11 +11,10 @@ import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.koffa.model.City;
+import org.koffa.model.CityToSendForUpdate;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CityService {
 
@@ -55,11 +54,15 @@ public class CityService {
     }
 
 
-    public City updateCity(long cityId, City city, String jwt) throws RuntimeException {
+    public City updateCity(CityToSendForUpdate cityToUpdate, String jwt) throws RuntimeException {
         try {
-            HttpPut httpPut = new HttpPut(BASE_URL + "/" + cityId);
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonBody = objectMapper.writeValueAsString(cityToUpdate);
+
+            HttpPut httpPut = new HttpPut(BASE_URL + "/" + cityToUpdate.getCityId());
             httpPut.setHeader("Authorization", "Bearer " + jwt);
-            httpPut.setEntity(new StringEntity(objectMapper.writeValueAsString(city)));
+            httpPut.setHeader("Content-Type", "application/json");
+            httpPut.setEntity(new StringEntity(jsonBody));
 
             try (CloseableHttpResponse response = httpClient.execute(httpPut)) {
                 int statusCode = response.getCode();
@@ -76,6 +79,7 @@ public class CityService {
             throw new RuntimeException(e);
         }
     }
+
 
 
     public City getCityById(int id, String jwt) throws RuntimeException {
