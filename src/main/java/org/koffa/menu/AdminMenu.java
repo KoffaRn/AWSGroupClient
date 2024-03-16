@@ -375,6 +375,11 @@ public class AdminMenu {
 
     private void getCompanyByName() {
 
+        System.out.println("Enter company name: ");
+        String name = scanner.next();
+        Company company = companyService.getCompanyByName(name, JWT);
+        System.out.println(company.toString());
+
     }
 
     private void updateCompany() {
