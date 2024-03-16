@@ -9,11 +9,12 @@ public class Main {
 
         UserIdentity auth = new UserIdentity();
 
-        System.out.println(auth.getToken());
-
         AdminMenu adminMenu1 = new AdminMenu(auth.getToken(), auth.getUsername());
 
+        System.out.println(auth.isAdmin());
+
         adminMenu1.showMenu();
+
 
 
     }
