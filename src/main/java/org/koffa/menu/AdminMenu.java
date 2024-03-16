@@ -351,9 +351,25 @@ public class AdminMenu {
 
     private void getAllCompanies() {
 
+        List<CompanyDTO> companies = companyService.getCompanies(JWT);
+        for (CompanyDTO company : companies) {
+            System.out.println(company.getCompanyName());
+        }
+
     }
 
     private void deleteCompany() {
+
+        List<CompanyDTO> companies = companyService.getCompanies(JWT);
+        System.out.println("Choose company to delete");
+
+        for (CompanyDTO company : companies) {
+            System.out.println(company.getCompanyId() + ". " + company.getCompanyName());
+        }
+        int input = scanner.nextInt() -1;
+        companyService.deleteCompany(companies.get(input).getCompanyId(), JWT);
+
+        System.out.println("Company deleted.");
 
     }
 
