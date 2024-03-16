@@ -14,11 +14,14 @@ import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.net.URIBuilder;
 import org.koffa.model.User;
 
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -80,19 +83,38 @@ public class UserService {
         }
     }
 
-    public String updateUserRole(Long id, Integer roleId, String jwt) {
+
+
+    public User updateUserRole(int userId, int roleId, String jwt) {
         try {
-            HttpPatch request = new HttpPatch(BASE_URL + "/" + id + "/role/" + roleId);
+            // Correcting the URI path to remove duplicate 'user' segment
+            URI uri = new URIBuilder(BASE_URL)
+                    .setPath("/user/" + userId + "/role/" + roleId)
+                    .setParameter("roleId", String.valueOf(roleId))
+                    .build();
+
+            HttpPatch request = new HttpPatch(uri);
             request.setHeader("Authorization", "Bearer " + jwt);
+
             try (CloseableHttpResponse response = httpClient.execute(request)) {
-                return handleResponse(response);
+                int statusCode = response.getCode();
+                if (statusCode == HttpStatus.SC_OK) {
+                    return new ObjectMapper().readValue(EntityUtils.toString(response.getEntity()), User.class);
+                } else {
+                    throw new RuntimeException("Failed to update user role. Status code: " + statusCode);
+                }
             } catch (ParseException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("Failed to parse response.", e);
             }
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to update user role.", e);
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException("Failed to construct URI: " + e.getMessage(), e);
         }
     }
+
+
+
+
+
 
     public String deleteUser(Long id, String jwt) {
         try {

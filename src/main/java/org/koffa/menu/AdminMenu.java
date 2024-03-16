@@ -9,6 +9,7 @@ import org.koffa.service.UserService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class AdminMenu {
@@ -460,11 +461,50 @@ public class AdminMenu {
 
         List<User> users = userService.getAllUsers(JWT);
         for (User user : users) {
-            System.out.println(user.getUserId() + ". " + user.getUsername());
+            String role = user.getAuthorities().get(0).getAuthority();
+            System.out.println(user.getUserId() + ". " + user.getUsername() + " - " + role);
         }
     }
 
     private void updateRole() {
+        try {
+            System.out.println("1. Make admin");
+            System.out.println("2. Make user");
+            int input = scanner.nextInt();
+
+            List<User> users = userService.getAllUsers(JWT);
+            System.out.println("Choose user to update:");
+            int i = 1;
+            for (User user : users) {
+                System.out.println(i++ + ". " + user.getUsername() + " - " + user.getAuthorities().get(0).getAuthority());
+
+            }
+            int userIdIndex = scanner.nextInt() - 1;
+            if (userIdIndex < 0 || userIdIndex >= users.size()) {
+                System.out.println("Invalid user index. Please select a valid user.");
+                return;
+            }
+            User user = users.get(userIdIndex);
+            System.out.println(user.getUserId());
+
+            int roleId;
+            if (input == 1) {
+                roleId = 1;
+            } else if (input == 2) {
+                roleId = 2;
+            } else {
+                System.out.println("Invalid input");
+                return;
+            }
+
+            userService.updateUserRole(user.getUserId(), roleId, JWT);
+            System.out.println("User role updated successfully." + user.getUsername() + " is now " + (roleId == 1 ? "admin" : "user"));
+
+        } catch (NoSuchElementException e) {
+            System.out.println("Invalid input. Please provide a valid option.");
+        } catch (RuntimeException e) {
+            System.out.println("Failed to update user role: " + e.getMessage());
+        }
 
     }
 
