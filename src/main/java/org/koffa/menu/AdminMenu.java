@@ -511,7 +511,6 @@ public class AdminMenu {
     private void updateUser() {
 
     }
-
     private void deleteUser() {
 
         List<User> users = userService.getAllUsers(JWT);
@@ -540,6 +539,4 @@ public class AdminMenu {
         System.out.println(user.toString());
 
     }
-
-
 }
