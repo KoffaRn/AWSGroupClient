@@ -12,6 +12,7 @@ import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.koffa.model.Company;
 import org.koffa.model.CompanyDTO;
 
 import java.io.IOException;
@@ -27,16 +28,15 @@ public class CompanyService {
         this.httpClient = HttpClients.createDefault();
     }
 
-    public CompanyDTO getCompanyByName(String companyName, String jwt) throws RuntimeException {
+    public Company getCompanyByName(String companyName, String jwt) throws RuntimeException {
         try {
             HttpGet httpGet = new HttpGet(baseUrl + "/getByName?name=" + companyName);
-            httpGet.setHeader("Content-type", "application/json");
             httpGet.setHeader("Authorization", "Bearer " + jwt);
             try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
                 int status = response.getCode();
                 String result = EntityUtils.toString(response.getEntity());
                 if (status == HttpStatus.SC_OK) {
-                    return new Gson().fromJson(result, CompanyDTO.class);
+                    return new Gson().fromJson(result, Company.class);
                 } else {
                     throw new RuntimeException("Failed to get company. Status code: " + status);
                 }
