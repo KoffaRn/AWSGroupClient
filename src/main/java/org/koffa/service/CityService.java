@@ -32,7 +32,7 @@ public class CityService {
     public City addCity(String cityName, String jwt) throws RuntimeException {
         try {
             Map<String, String> cityData = new HashMap<>();
-            cityData.put("name", cityName);
+            cityData.put("cityName", cityName);
             String cityJson = objectMapper.writeValueAsString(cityData);
 
             HttpPost httpPost = new HttpPost(BASE_URL);
