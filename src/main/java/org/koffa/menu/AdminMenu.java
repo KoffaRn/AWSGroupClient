@@ -6,7 +6,6 @@ import org.koffa.service.CompanyService;
 import org.koffa.service.EmployeeService;
 import org.koffa.service.UserService;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -14,17 +13,20 @@ import java.util.Scanner;
 
 public class AdminMenu {
 
+    // User menu allows the user to control Employees only.
+    // The methods for Employees are the public and can be used in the UserMenu class.
+
     private final String URL = "http://localhost:5000"; //Todo add URL from the properties
     private final String JWT;
     private final String username;
-    Scanner scanner = new Scanner(System.in);
+    private final UserService userService;
+    private final CompanyService companyService;
+    private final EmployeeService employeeService;
+    private final CityService cityService;
 
-    private UserService userService;
-    private CompanyService companyService;
-    private EmployeeService employeeService;
-    private CityService cityService;
-    
-    public AdminMenu (String JWT, String username) {
+    InputFilter scanner = new InputFilter();
+
+    public AdminMenu(String JWT, String username) {
         this.JWT = JWT;
         this.username = username;
         this.cityService = new CityService(URL);
@@ -79,7 +81,7 @@ public class AdminMenu {
         int input = scanner.nextInt();
         if (input == 6) showMenu();
 
-        switch (input){
+        switch (input) {
             case 1:
                 addCity();
                 controlCitys();
@@ -103,31 +105,18 @@ public class AdminMenu {
         }
     }
 
-    // OK to use this for the user menu as well
-
-    public void getAllCitys() {
+    private void getAllCitys() {
 
         List<City> cities = cityService.getAllCities(JWT);
         for (City city : cities) {
             System.out.println(city.toString());
         }
     }
-    public void deleteCity() {
-        List<City> cities = cityService.getAllCities(JWT);
-        System.out.println("Choose city to delete");
 
-        for (int i = 0; i < cities.size(); i++) {
-            System.out.println((i + 1) + ". " + cities.get(i).getCityName());
-        }
-
-        int input = scanner.nextInt();
-        if (input < 1 || input > cities.size()) {
-            System.out.println("Invalid input. Please select a valid city index.");
-            return;
-        }
+    private void deleteCity() {
 
         // Get the selected city
-        City selectedCity = cities.get(input - 1);
+        City selectedCity = makeUserSelectCity();
         int cityIdToDelete = selectedCity.getCityId();
 
         // Print the name of the selected city (optional)
@@ -137,7 +126,7 @@ public class AdminMenu {
         cityService.deleteCity(cityIdToDelete, JWT);
     }
 
-    public void getCityByID() {
+    private void getCityByID() {
 
         System.out.println("Enter city id: ");
         int id = scanner.nextInt();
@@ -146,26 +135,21 @@ public class AdminMenu {
 
     }
 
-    public void updateCity() {
-        List<City> cities = cityService.getAllCities(JWT);
-        System.out.println("Choose city to update");
+    private void updateCity() {
 
-        int i = 1;
-        for (City city : cities) {
-            System.out.println(i++ + ". " + city.getCityName());
-        }
-        int input = scanner.nextInt() -1;
+        City city = makeUserSelectCity();
 
-        System.out.println("You chose: " + cities.get(input).getCityName());
+        System.out.println("You chose: " + city.getCityName());
         System.out.println("Enter the new name: ");
         String name = scanner.next();
         CityToSendForUpdate updateCity = new CityToSendForUpdate();
-        updateCity.setCityId(cities.get(input).getCityId());
+        updateCity.setCityId(city.getCityId());
         updateCity.setCityName(name);
 
         cityService.updateCity(updateCity, JWT);
     }
-    public void addCity(){
+
+    private void addCity() {
         System.out.println("Enter city name");
         String name = scanner.next();
 
@@ -175,7 +159,7 @@ public class AdminMenu {
     //--------------------------------------------------------------------------------
 
 
-    private void controlEmployees() {
+    public void controlEmployees() {
         System.out.println("--------------- Welcome to the Employee control ---------------");
         System.out.println("1. Add Employee");
         System.out.println("2. Update Employee");
@@ -186,7 +170,7 @@ public class AdminMenu {
         int input = scanner.nextInt();
         if (input == 6) showMenu();
 
-        switch (input){
+        switch (input) {
             case 1:
                 addEmployee();
                 controlEmployees();
@@ -218,6 +202,7 @@ public class AdminMenu {
             System.out.println(employee.getFirstName());
         }
     }
+
     public void deleteEmployee() {
 
         List<EmployeeDTO> employees = employeeService.getEmployees(JWT);
@@ -227,10 +212,15 @@ public class AdminMenu {
         for (EmployeeDTO employee : employees) {
             System.out.println(i++ + ". " + employee.getFirstName() + " " + employee.getLastName());
         }
-        int input = scanner.nextInt() -1;
-        employeeService.deleteEmployee(employees.get(input).getId(), JWT);
-        System.out.println("Employee: "+ employees.get(input).getFirstName() + " deleted.");
+        int input = scanner.nextInt() - 1;
+
+        EmployeeDTO employee = makeUserSelectEmployee();
+
+        assert employee != null;
+        employeeService.deleteEmployee(employee.getId(), JWT);
+        System.out.println("Employee: " + employees.get(input).getFirstName() + " deleted.");
     }
+
     public void getEmployeeByName() {
 
         System.out.println("Enter employee name: ");
@@ -239,16 +229,12 @@ public class AdminMenu {
         System.out.println(employee.toString());
 
     }
+
     public void updateEmployee() {
 
-        List<EmployeeDTO> employees = employeeService.getEmployees(JWT);
-        System.out.println("Choose employee to update");
+        EmployeeDTO employee = makeUserSelectEmployee();
 
-        for (EmployeeDTO employee : employees) {
-            System.out.println(employee.getId() + ". " + employee.getFirstName() + " " + employee.getLastName());
-        }
 
-        int input = scanner.nextInt();
         System.out.println("Enter the new first name: ");
         String firstName = scanner.next();
         System.out.println("Enter the new last name: ");
@@ -262,38 +248,19 @@ public class AdminMenu {
         updateEmployee.setLastName(lastName);
         updateEmployee.setJobTitle(title);
         updateEmployee.setSalary(salary);
-        employeeService.updateEmployee(employees.get(input).getId(), updateEmployee, JWT);
+        assert employee != null;
+        employeeService.updateEmployee(employee.getId(), updateEmployee, JWT);
 
     }
+
     public void addEmployee() {
 
-        System.out.println("Choose a city:");
-        List<City> cities = cityService.getAllCities(JWT);
-        int j = 1;
-        for (City city : cities) {
-            System.out.println(j++ + ". " + city.getCityName());
-        }
-        int cityInput = scanner.nextInt() - 1;
-        if (cityInput < 0 || cityInput >= cities.size()) {
-            System.out.println("Invalid city choice.");
-            return;
-        }
-        City selectedCity = cities.get(cityInput);
+        City selectedCity = makeUserSelectCity();
         System.out.println("You chose: " + selectedCity.getCityName());
 
         // Choose a company
-        System.out.println("Choose a company:");
-        List<CompanyDTO> companies = companyService.getCompanies(JWT);
-        int i = 1;
-        for (CompanyDTO company : companies) {
-            System.out.println(i++ + ". " + company.getCompanyName());
-        }
-        int companyInput = scanner.nextInt() - 1;
-        if (companyInput < 0 || companyInput >= companies.size()) {
-            System.out.println("Invalid company choice.");
-            return;
-        }
-        CompanyDTO selectedCompany = companies.get(companyInput);
+        CompanyDTO selectedCompany = makeUserSelectCompany();
+        assert selectedCompany != null;
         System.out.println("You chose: " + selectedCompany.getCompanyName());
 
         Company company = companyService.getCompanyByName(selectedCompany.getCompanyName(), JWT);
@@ -332,7 +299,7 @@ public class AdminMenu {
         int input = scanner.nextInt();
         if (input == 6) showMenu();
 
-        switch (input){
+        switch (input) {
             case 1:
                 addCompany();
                 controlCompanies();
@@ -356,8 +323,6 @@ public class AdminMenu {
         }
     }
 
-    // OK to use this for the user menu as well
-
     private void getAllCompanies() {
 
         List<CompanyDTO> companies = companyService.getCompanies(JWT);
@@ -369,16 +334,9 @@ public class AdminMenu {
 
     private void deleteCompany() {
 
-        List<CompanyDTO> companies = companyService.getCompanies(JWT);
-        System.out.println("Choose company to delete");
-
-        int i = 1;
-
-        for (CompanyDTO company : companies) {
-            System.out.println(i++ + ". " + company.getCompanyName());
-        }
-        int input = scanner.nextInt() -1;
-        companyService.deleteCompany(companies.get(input).getCompanyId(), JWT);
+        CompanyDTO company = makeUserSelectCompany();
+        assert company != null;
+        companyService.deleteCompany(company.getCompanyId(), JWT);
 
         System.out.println("Company deleted.");
 
@@ -401,17 +359,8 @@ public class AdminMenu {
 
         System.out.println("Enter company name");
         String name = scanner.next();
-        System.out.println("Choose a city:");
-        List<City> cities = cityService.getAllCities(JWT);
-        for (City city : cities) {
-            System.out.println(city.getCityId() + ". " + city.getCityName());
-        }
-        int cityInput = scanner.nextInt() - 1;
-        if (cityInput < 0 || cityInput >= cities.size()) {
-            System.out.println("Invalid city choice.");
-            return;
-        }
-        City selectedCity = cities.get(cityInput);
+
+        City selectedCity = makeUserSelectCity();
         System.out.println("You chose: " + selectedCity.getCityName());
 
         CompanyDTO company = new CompanyDTO();
@@ -439,7 +388,7 @@ public class AdminMenu {
         int input = scanner.nextInt();
         if (input == 6) showMenu();
 
-        switch (input){
+        switch (input) {
             case 1:
                 getUserById();
                 controlUsers();
@@ -465,7 +414,7 @@ public class AdminMenu {
 
     }
 
-    public void getAllUsers() {
+    private void getAllUsers() {
 
         List<User> users = userService.getAllUsers(JWT);
         for (User user : users) {
@@ -519,6 +468,7 @@ public class AdminMenu {
     private void updateUser() {
 
     }
+
     private void deleteUser() {
 
         List<User> users = userService.getAllUsers(JWT);
@@ -546,5 +496,58 @@ public class AdminMenu {
         User user = userService.getUserById(Long.valueOf(id), JWT);
         System.out.println(user.toString());
 
+    }
+
+
+    // Code that was repeated in the methods above
+    public City makeUserSelectCity() {
+
+        System.out.println("Choose a city:");
+
+        List<City> cities = cityService.getAllCities(JWT);
+        int i = 1;
+        for (City city : cities) {
+            System.out.println(i++ + ". " + city.getCityName());
+        }
+        int input = scanner.nextInt() - 1;
+        if (input < 0 || input >= cities.size()) {
+            System.out.println("Invalid city choice.");
+            return null;
+        }
+        return cities.get(input);
+    }
+
+    private EmployeeDTO makeUserSelectEmployee() {
+
+        List<EmployeeDTO> employees = employeeService.getEmployees(JWT);
+        System.out.println("Choose employee to delete");
+
+        int i = 1;
+        for (EmployeeDTO employee : employees) {
+            System.out.println(i++ + ". " + employee.getFirstName() + " " + employee.getLastName());
+        }
+        int input = scanner.nextInt() - 1;
+        if (input < 0 || input >= employees.size()) {
+            System.out.println("Invalid city choice.");
+            return null;
+        }
+        return employees.get(input);
+    }
+
+    private CompanyDTO makeUserSelectCompany() {
+
+        List<CompanyDTO> companies = companyService.getCompanies(JWT);
+        System.out.println("Choose company to delete");
+
+        int i = 1;
+        for (CompanyDTO company : companies) {
+            System.out.println(i++ + ". " + company.getCompanyName());
+        }
+        int input = scanner.nextInt() - 1;
+        if (input < 0 || input >= companies.size()) {
+            System.out.println("Invalid city choice.");
+            return null;
+        }
+        return companies.get(input);
     }
 }
