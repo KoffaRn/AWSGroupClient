@@ -8,12 +8,12 @@ public class Main {
 
         UserIdentity auth = new UserIdentity();
 
-        AdminMenu adminMenu1 = new AdminMenu(auth.getToken(), auth.getUsername());
+        if (auth.isAdmin()) {
+            AdminMenu adminMenu1 = new AdminMenu(auth.getToken(), auth.getUsername());
+            adminMenu1.showMenu();
+        } else {
+            // We can have the user menu here.
 
-        System.out.println(auth.isAdmin());
-
-        adminMenu1.showMenu();
-
-
+        }
     }
 }

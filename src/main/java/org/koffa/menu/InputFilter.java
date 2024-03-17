@@ -5,9 +5,7 @@ import java.util.Scanner;
 public class InputFilter {
 
 
-
     Scanner scanner = new Scanner(System.in);
-
 
 
     public int nextInt() {
@@ -28,7 +26,7 @@ public class InputFilter {
                 double input = scanner.nextDouble();
                 return input;
             } else {
-                scanner.next(); // Consume invalid input
+                scanner.next();
                 System.out.println("Invalid input. Please enter a valid number.");
             }
         }
@@ -40,13 +38,11 @@ public class InputFilter {
                 String input = scanner.nextLine();
                 return input;
             } else {
-                scanner.next(); // Consume invalid input
+                scanner.next();
                 System.out.println("Invalid input. Please enter a valid string.");
             }
         }
     }
-
-
 
 
 }
