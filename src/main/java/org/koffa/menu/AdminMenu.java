@@ -205,20 +205,11 @@ public class AdminMenu {
 
     public void deleteEmployee() {
 
-        List<EmployeeDTO> employees = employeeService.getEmployees(JWT);
-        System.out.println("Choose employee to delete");
-
-        int i = 1;
-        for (EmployeeDTO employee : employees) {
-            System.out.println(i++ + ". " + employee.getFirstName() + " " + employee.getLastName());
-        }
-        int input = scanner.nextInt() - 1;
-
         EmployeeDTO employee = makeUserSelectEmployee();
 
         assert employee != null;
         employeeService.deleteEmployee(employee.getId(), JWT);
-        System.out.println("Employee: " + employees.get(input).getFirstName() + " deleted.");
+        System.out.println("Employee: " + employee.getFirstName() + " deleted.");
     }
 
     public void getEmployeeByName() {
@@ -258,7 +249,6 @@ public class AdminMenu {
         City selectedCity = makeUserSelectCity();
         System.out.println("You chose: " + selectedCity.getCityName());
 
-        // Choose a company
         CompanyDTO selectedCompany = makeUserSelectCompany();
         assert selectedCompany != null;
         System.out.println("You chose: " + selectedCompany.getCompanyName());
@@ -369,7 +359,6 @@ public class AdminMenu {
         ArrayList<Employee> employees = new ArrayList<>();
         company.setEmployees(employees);
 
-        System.out.println("Test here");
         companyService.addCompany(company, JWT);
 
     }
