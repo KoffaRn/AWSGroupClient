@@ -12,8 +12,8 @@ public class Main {
             AdminMenu adminMenu1 = new AdminMenu(auth.getToken(), auth.getUsername());
             adminMenu1.showMenu();
         } else {
-            // We can have the user menu here.
-
+            AdminMenu adminMenu2 = new AdminMenu(auth.getToken(), auth.getUsername());
+            adminMenu2.controlEmployees();
         }
     }
 }

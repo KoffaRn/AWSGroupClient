@@ -74,12 +74,16 @@ public class UserService {
         }
     }
 
-    public String updateUser(Long id, String user, String jwt) {
+    public String updateUser(int id, User user, String jwt) {
         try {
+            Gson gson = new Gson();
+            String userJson = gson.toJson(user);
+
             HttpPatch request = new HttpPatch(BASE_URL + "/" + id);
-            StringEntity params = new StringEntity(user, org.apache.hc.core5.http.ContentType.APPLICATION_JSON);
+            StringEntity params = new StringEntity(userJson, org.apache.hc.core5.http.ContentType.APPLICATION_JSON);
             request.setEntity(params);
             request.setHeader("Authorization", "Bearer " + jwt);
+
             try (CloseableHttpResponse response = httpClient.execute(request)) {
                 return handleResponse(response);
             }
@@ -87,6 +91,7 @@ public class UserService {
             throw new RuntimeException("Failed to update user.", e);
         }
     }
+
 
 
 

@@ -429,19 +429,7 @@ public class AdminMenu {
             System.out.println("2. Make user");
             int input = scanner.nextInt();
 
-            List<User> users = userService.getAllUsers(JWT);
-            System.out.println("Choose user to update:");
-            int i = 1;
-            for (User user : users) {
-                System.out.println(i++ + ". " + user.getUsername() + " - " + user.getAuthorities().get(0).getAuthority());
-
-            }
-            int userIdIndex = scanner.nextInt() - 1;
-            if (userIdIndex < 0 || userIdIndex >= users.size()) {
-                System.out.println("Invalid user index. Please select a valid user.");
-                return;
-            }
-            User user = users.get(userIdIndex);
+            User user = makeUserSelectUser();
             System.out.println(user.getUserId());
 
             int roleId;
@@ -467,26 +455,22 @@ public class AdminMenu {
 
     private void updateUser() {
 
+        User user = makeUserSelectUser();
+        System.out.println("Enter new username: ");
+        String newName = scanner.next();
+        assert user != null;
+        user.setUsername(newName);
+
+        userService.updateUser(user.getUserId(), user, JWT);
+        System.out.println("User updated successfully.");
+
     }
 
     private void deleteUser() {
 
-        List<User> users = userService.getAllUsers(JWT);
-        System.out.println("Choose user to Delete:");
-        int i = 1;
-        for (User user : users) {
-            System.out.println(i++ + ". " + user.getUsername() + " - " + user.getAuthorities().get(0).getAuthority());
-
-        }
-        int userIdIndex = scanner.nextInt() - 1;
-        if (userIdIndex < 0 || userIdIndex >= users.size()) {
-            System.out.println("Invalid user index. Please select a valid user.");
-            return;
-        }
-        User user = users.get(userIdIndex);
+        User user = makeUserSelectUser();
         userService.deleteUser((long) user.getUserId(), JWT);
         System.out.println("User deleted successfully.");
-
 
     }
 
@@ -500,6 +484,22 @@ public class AdminMenu {
 
 
     // Code that was repeated in the methods above
+
+    private User makeUserSelectUser() {
+        List<User> users = userService.getAllUsers(JWT);
+        System.out.println("Choose user to delete");
+        int i = 1;
+        for (User user : users) {
+            System.out.println(i++ + ". " + user.getUsername());
+        }
+        int input = scanner.nextInt() - 1;
+        if (input < 0 || input >= users.size()) {
+            System.out.println("Invalid user choice.");
+            return null;
+        }
+        return users.get(input);
+    }
+
     private City makeUserSelectCity() {
 
         System.out.println("Choose a city:");

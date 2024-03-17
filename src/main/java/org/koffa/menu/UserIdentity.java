@@ -7,7 +7,7 @@ import org.koffa.service.*;
 import java.util.Scanner;
 
 public class UserIdentity {
-    Scanner scan = new Scanner(System.in);
+    InputFilter scan = new InputFilter();
     private AuthService authService;
     @Getter
     private LoginResponse userResponse;

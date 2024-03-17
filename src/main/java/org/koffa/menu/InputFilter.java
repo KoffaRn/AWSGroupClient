@@ -34,8 +34,8 @@ public class InputFilter {
 
     public String next() {
         while (true) {
-            if (scanner.hasNextLine()) {
-                String input = scanner.nextLine();
+            if (scanner.hasNext()) {
+                String input = scanner.next();
                 return input;
             } else {
                 scanner.next();
