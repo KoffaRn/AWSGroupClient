@@ -500,7 +500,7 @@ public class AdminMenu {
 
 
     // Code that was repeated in the methods above
-    public City makeUserSelectCity() {
+    private City makeUserSelectCity() {
 
         System.out.println("Choose a city:");
 
