@@ -9,7 +9,6 @@ import org.koffa.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 public class AdminMenu {
 
@@ -106,8 +105,12 @@ public class AdminMenu {
     }
 
     private void getAllCitys() {
-
-        List<City> cities = cityService.getAllCities(JWT);
+        List<City> cities = new ArrayList<>();
+        try {
+            cities = cityService.getAllCities(JWT);
+        } catch (Exception e) {
+            System.err.println("Failed to get cities: " + e.getMessage());
+        }
         for (City city : cities) {
             System.out.println(city.toString());
         }
@@ -117,22 +120,31 @@ public class AdminMenu {
 
         // Get the selected city
         City selectedCity = makeUserSelectCity();
-        int cityIdToDelete = selectedCity.getCityId();
 
-        // Print the name of the selected city (optional)
-        System.out.println("Selected city to delete: " + selectedCity.getCityName());
+        int cityIdToDelete = 0;
+        if (selectedCity != null) {
+            cityIdToDelete = selectedCity.getCityId();
+            // Print the name of the selected city (optional)
+            System.out.println("Selected city to delete: " + selectedCity.getCityName());
+        }
 
         // Delete the selected city
-        cityService.deleteCity(cityIdToDelete, JWT);
+        try {
+            cityService.deleteCity(cityIdToDelete, JWT);
+            } catch (Exception e) {
+            System.err.println("Failed to delete city: " + e.getMessage());
+        }
     }
 
     private void getCityByID() {
-
         System.out.println("Enter city id: ");
         int id = scanner.nextInt();
-        City city = cityService.getCityById(id, JWT);
-        System.out.println(city.toString());
-
+        try {
+            City city = cityService.getCityById(id, JWT);
+            System.out.println(city.toString());
+        } catch (Exception e) {
+            System.err.println("Failed to get city: " + e.getMessage());
+        }
     }
 
     private void updateCity() {
@@ -146,14 +158,24 @@ public class AdminMenu {
         updateCity.setCityId(city.getCityId());
         updateCity.setCityName(name);
 
-        cityService.updateCity(updateCity, JWT);
+        try {
+            cityService.updateCity(updateCity, JWT);
+            System.out.println("City updated successfully.");
+        } catch (Exception e) {
+            System.err.println("Failed to update city: " + e.getMessage());
+        }
     }
 
     private void addCity() {
         System.out.println("Enter city name");
         String name = scanner.next();
 
-        cityService.addCity(name, JWT);
+        try {
+            cityService.addCity(name, JWT);
+            System.out.println("City added successfully.");
+        } catch (Exception e) {
+            System.err.println("Failed to add city: " + e.getMessage());
+        }
     }
 
     //--------------------------------------------------------------------------------
@@ -197,7 +219,12 @@ public class AdminMenu {
     // OK to use this for the user menu as well
 
     public void getAllEmployees() {
-        List<EmployeeDTO> employees = employeeService.getEmployees(JWT);
+        List<EmployeeDTO> employees = new ArrayList<>();
+        try {
+            employees = employeeService.getEmployees(JWT);
+        } catch (Exception e) {
+            System.err.println("Failed to get employees: " + e.getMessage());
+        }
         for (EmployeeDTO employee : employees) {
             System.out.println(employee.getFirstName());
         }
@@ -207,18 +234,27 @@ public class AdminMenu {
 
         EmployeeDTO employee = makeUserSelectEmployee();
 
-        assert employee != null;
-        employeeService.deleteEmployee(employee.getId(), JWT);
-        System.out.println("Employee: " + employee.getFirstName() + " deleted.");
+        if (employee != null) {
+            try {
+                employeeService.deleteEmployee(employee.getId(), JWT);
+                System.out.println("Employee: " + employee.getFirstName() + " deleted.");
+            } catch (Exception e) {
+                System.err.println("Failed to delete employee: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Employee not found.");
+        }
     }
 
     public void getEmployeeByName() {
-
         System.out.println("Enter employee name: ");
         String name = scanner.next();
-        Employee employee = employeeService.getByName(name, JWT);
-        System.out.println(employee.toString());
-
+        try {
+            Employee employee = employeeService.getByName(name, JWT);
+            System.out.println(employee.toString());
+        } catch (Exception e) {
+            System.err.println("Failed to get employee: " + e.getMessage());
+        }
     }
 
     public void updateEmployee() {
@@ -239,21 +275,28 @@ public class AdminMenu {
         updateEmployee.setLastName(lastName);
         updateEmployee.setJobTitle(title);
         updateEmployee.setSalary(salary);
-        assert employee != null;
-        employeeService.updateEmployee(employee.getId(), updateEmployee, JWT);
-
+        try {
+            employeeService.updateEmployee(employee.getId(), updateEmployee, JWT);
+            System.out.println("Employee updated successfully.");
+        } catch (Exception e) {
+            System.err.println("Failed to update employee: " + e.getMessage());
+        }
     }
 
     public void addEmployee() {
 
         City selectedCity = makeUserSelectCity();
-        System.out.println("You chose: " + selectedCity.getCityName());
-
+        System.out.println("You chose: " + (selectedCity != null ? selectedCity.getCityName() : 0));
         CompanyDTO selectedCompany = makeUserSelectCompany();
         assert selectedCompany != null;
         System.out.println("You chose: " + selectedCompany.getCompanyName());
 
-        Company company = companyService.getCompanyByName(selectedCompany.getCompanyName(), JWT);
+        // Set CompanyDTO data
+        Company company = new Company();
+        company.setCity(selectedCity);
+        company.setEmployees(selectedCompany.getEmployees());
+        company.setCompanyName(selectedCompany.getCompanyName());
+        company.setCompanyId(selectedCompany.getCompanyId());
 
         System.out.println("Enter first name: ");
         String firstName = scanner.next();
@@ -272,7 +315,12 @@ public class AdminMenu {
         employee.setCity(selectedCity);
         employee.setCompany(company);
 
-        employeeService.addEmployee(employee, JWT);
+        try {
+            employeeService.addEmployee(employee, JWT);
+            System.out.println("Employee added successfully.");
+        } catch (Exception e) {
+            System.err.println("Failed to add employee: " + e.getMessage());
+        }
     }
 
     //--------------------------------------------------------------------------------
@@ -314,8 +362,12 @@ public class AdminMenu {
     }
 
     private void getAllCompanies() {
-
-        List<CompanyDTO> companies = companyService.getCompanies(JWT);
+        List<CompanyDTO> companies = new ArrayList<>();
+        try {
+            companies = companyService.getCompanies(JWT);
+        } catch (Exception e) {
+            System.err.println("Failed to get companies: " + e.getMessage());
+        }
         for (CompanyDTO company : companies) {
             System.out.println(company.getCompanyName());
         }
@@ -326,23 +378,39 @@ public class AdminMenu {
 
         CompanyDTO company = makeUserSelectCompany();
         assert company != null;
-        companyService.deleteCompany(company.getCompanyId(), JWT);
-
-        System.out.println("Company deleted.");
-
+        try {
+            companyService.deleteCompany(company.getCompanyId(), JWT);
+            System.out.println("Company deleted.");
+        } catch (Exception e) {
+            System.err.println("Failed to delete company: " + e.getMessage());
+        }
     }
 
     private void getCompanyByName() {
-
         System.out.println("Enter company name: ");
         String name = scanner.next();
-        Company company = companyService.getCompanyByName(name, JWT);
-        System.out.println(company.toString());
-
+        try {
+            Company company = companyService.getCompanyByName(name, JWT);
+            System.out.println(company.toString());
+        } catch (Exception e) {
+            System.err.println("Failed to get company: " + e.getMessage());
+        }
     }
 
     private void updateCompany() {
-
+        CompanyDTO company = makeUserSelectCompany();
+        System.out.println("You chose: " + company.getCompanyName());
+        System.out.println("Enter the new name: ");
+        String name = scanner.next();
+        City selectedCity = makeUserSelectCity();
+        System.out.println("You chose: " + selectedCity.getCityName());
+        company.setCompanyName(name);
+        try {
+            companyService.updateCompany(company.getCompanyId(), company, JWT);
+            System.out.println("Company updated successfully.");
+        } catch (Exception e) {
+            System.err.println("Failed to update company: " + e.getMessage());
+        }
     }
 
     private void addCompany() {
@@ -359,7 +427,12 @@ public class AdminMenu {
         ArrayList<Employee> employees = new ArrayList<>();
         company.setEmployees(employees);
 
-        companyService.addCompany(company, JWT);
+        try {
+            companyService.addCompany(company, JWT);
+            System.out.println("Company added successfully.");
+        } catch (Exception e) {
+            System.err.println("Failed to add company: " + e.getMessage());
+        }
 
     }
 
@@ -404,8 +477,12 @@ public class AdminMenu {
     }
 
     private void getAllUsers() {
-
-        List<User> users = userService.getAllUsers(JWT);
+        List<User> users = new ArrayList<>();
+        try {
+            users = userService.getAllUsers(JWT);
+        } catch (Exception e) {
+            System.err.println("Failed to get users: " + e.getMessage());
+        }
         for (User user : users) {
             String role = user.getAuthorities().get(0).getAuthority();
             System.out.println(user.getUserId() + ". " + user.getUsername() + " - " + role);
@@ -430,9 +507,12 @@ public class AdminMenu {
                 System.out.println("Invalid input");
                 return;
             }
-
-            userService.updateUserRole(user.getUserId(), roleId, JWT);
-            System.out.println("User role updated successfully." + user.getUsername() + " is now " + (roleId == 1 ? "admin" : "user"));
+            try {
+                userService.updateUserRole(user.getUserId(), roleId, JWT);
+                System.out.println("User role updated successfully." + user.getUsername() + " is now " + (roleId == 1 ? "admin" : "user"));
+            } catch (Exception e) {
+                System.err.println("Failed to update user role: " + e.getMessage());
+            }
 
         } catch (NoSuchElementException e) {
             System.out.println("Invalid input. Please provide a valid option.");
@@ -449,33 +529,46 @@ public class AdminMenu {
         String newName = scanner.next();
         assert user != null;
         user.setUsername(newName);
-
-        userService.updateUser(user.getUserId(), user, JWT);
-        System.out.println("User updated successfully.");
-
+        try {
+            userService.updateUser(user.getUserId(), user, JWT);
+            System.out.println("User updated successfully.");
+        } catch (Exception e) {
+            System.err.println("Failed to update user: " + e.getMessage());
+        }
     }
 
     private void deleteUser() {
 
         User user = makeUserSelectUser();
-        userService.deleteUser((long) user.getUserId(), JWT);
-        System.out.println("User deleted successfully.");
-
+        try {
+            userService.deleteUser((long) user.getUserId(), JWT);
+            System.out.println("User deleted successfully.");
+        } catch (Exception e) {
+            System.err.println("Failed to delete user: " + e.getMessage());
+        }
     }
 
     private void getUserById() {
         System.out.println("Enter user ID: ");
         int id = scanner.nextInt();
-        User user = userService.getUserById(Long.valueOf(id), JWT);
-        System.out.println(user.toString());
-
+        try {
+            User user = userService.getUserById((long) id, JWT);
+            System.out.println(user.toString());
+        } catch (Exception e) {
+            System.err.println("Failed to get user: " + e.getMessage());
+        }
     }
 
 
     // Code that was repeated in the methods above
 
     private User makeUserSelectUser() {
-        List<User> users = userService.getAllUsers(JWT);
+        List<User> users = new ArrayList<>();
+        try {
+            users = userService.getAllUsers(JWT);
+        }  catch (Exception e) {
+            System.err.println("Failed to get users: " + e.getMessage());
+        }
         System.out.println("Choose user to delete");
         int i = 1;
         for (User user : users) {
@@ -492,8 +585,12 @@ public class AdminMenu {
     private City makeUserSelectCity() {
 
         System.out.println("Choose a city:");
-
-        List<City> cities = cityService.getAllCities(JWT);
+        List<City> cities = new ArrayList<>();
+        try {
+            cities = cityService.getAllCities(JWT);
+        } catch (Exception e) {
+            System.err.println("Failed to get cities: " + e.getMessage());
+        }
         int i = 1;
         for (City city : cities) {
             System.out.println(i++ + ". " + city.getCityName());
@@ -507,8 +604,12 @@ public class AdminMenu {
     }
 
     private EmployeeDTO makeUserSelectEmployee() {
-
-        List<EmployeeDTO> employees = employeeService.getEmployees(JWT);
+        List<EmployeeDTO> employees = new ArrayList<>();
+        try {
+            employees = employeeService.getEmployees(JWT);
+        } catch (Exception e) {
+            System.err.println("Failed to get employees: " + e.getMessage());
+        }
         System.out.println("Choose employee to delete");
 
         int i = 1;
@@ -524,9 +625,13 @@ public class AdminMenu {
     }
 
     private CompanyDTO makeUserSelectCompany() {
-
-        List<CompanyDTO> companies = companyService.getCompanies(JWT);
-        System.out.println("Choose company to delete");
+        List<CompanyDTO> companies = new ArrayList<>();
+        try {
+            companies = companyService.getCompanies(JWT);
+        } catch (Exception e) {
+            System.err.println("Failed to get companies: " + e.getMessage());
+        }
+        System.out.println("Choose company");
 
         int i = 1;
         for (CompanyDTO company : companies) {

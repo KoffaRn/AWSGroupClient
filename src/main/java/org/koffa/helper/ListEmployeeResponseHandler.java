@@ -19,7 +19,6 @@ public class ListEmployeeResponseHandler implements HttpClientResponseHandler<Li
             try(InputStream body = classicHttpResponse.getEntity().getContent()) {
                 Gson gson = new Gson();
                 String response = new String(body.readAllBytes());
-                System.out.println(response);
                 return gson.fromJson(response, new TypeToken<List<EmployeeDTO>>() {
                 }.getType());
             } catch (Exception e) {

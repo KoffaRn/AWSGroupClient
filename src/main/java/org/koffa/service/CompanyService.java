@@ -9,6 +9,7 @@ import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
@@ -53,7 +54,8 @@ public class CompanyService {
             HttpPatch httpPatch = new HttpPatch(baseUrl + "/update/" + id);
             httpPatch.setHeader("Content-type", "application/json");
             httpPatch.setHeader("Authorization", "Bearer " + jwt);
-            httpPatch.setEntity(new StringEntity(new Gson().toJson(companyDTO)));
+            httpPatch.setEntity(new StringEntity(new Gson().toJson(companyDTO), ContentType.APPLICATION_JSON));
+            System.out.println(new Gson().toJson(companyDTO));
             try (CloseableHttpResponse response = httpClient.execute(httpPatch)) {
                 int status = response.getCode();
                 String result = EntityUtils.toString(response.getEntity());
@@ -119,7 +121,7 @@ public class CompanyService {
             HttpPost httpPost = new HttpPost(baseUrl + "/add");
             httpPost.setHeader("Content-type", "application/json");
             httpPost.setHeader("Authorization", "Bearer " + jwt);
-            httpPost.setEntity(new StringEntity(new Gson().toJson(companyDTO)));
+            httpPost.setEntity(new StringEntity(new Gson().toJson(companyDTO), ContentType.APPLICATION_JSON));
             try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
                 int status = response.getCode();
                 String result = EntityUtils.toString(response.getEntity());

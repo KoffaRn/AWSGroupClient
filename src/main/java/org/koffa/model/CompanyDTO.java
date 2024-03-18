@@ -10,7 +10,7 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @Data
 public class CompanyDTO {
-    private int companyId;
+    private Integer companyId;
     private String companyName;
     private City city;
     private ArrayList<Employee> employees;
