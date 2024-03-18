@@ -67,7 +67,6 @@ public class CityService {
             try (CloseableHttpResponse response = httpClient.execute(httpPut)) {
                 int statusCode = response.getCode();
                 if (statusCode == HttpStatus.SC_OK) {
-                    System.out.println("City updated successfully");
                     String result = EntityUtils.toString(response.getEntity());
                     return objectMapper.readValue(result, City.class);
                 } else {

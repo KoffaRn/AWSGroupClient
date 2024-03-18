@@ -122,7 +122,6 @@ public class CompanyService {
             httpPost.setHeader("Content-type", "application/json");
             httpPost.setHeader("Authorization", "Bearer " + jwt);
             httpPost.setEntity(new StringEntity(new Gson().toJson(companyDTO), ContentType.APPLICATION_JSON));
-            System.out.println(new Gson().toJson(companyDTO));
             try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
                 int status = response.getCode();
                 String result = EntityUtils.toString(response.getEntity());
