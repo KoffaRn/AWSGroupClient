@@ -253,7 +253,12 @@ public class AdminMenu {
         assert selectedCompany != null;
         System.out.println("You chose: " + selectedCompany.getCompanyName());
 
-        Company company = companyService.getCompanyByName(selectedCompany.getCompanyName(), JWT);
+        // Set CompanyDTO data
+        Company company = new Company();
+        company.setCity(selectedCity);
+        company.setEmployees(selectedCompany.getEmployees());
+        company.setCompanyName(selectedCompany.getCompanyName());
+        company.setCompanyId(selectedCompany.getCompanyId());
 
         System.out.println("Enter first name: ");
         String firstName = scanner.next();
@@ -349,7 +354,6 @@ public class AdminMenu {
         City selectedCity = makeUserSelectCity();
         System.out.println("You chose: " + selectedCity.getCityName());
         company.setCompanyName(name);
-        company.setCompanyId(selectedCity.getCityId());
         companyService.updateCompany(company.getCompanyId(), company, JWT);
     }
 
@@ -545,6 +549,6 @@ public class AdminMenu {
             System.out.println("Invalid city choice.");
             return null;
         }
-        return companies.get(input + 1);
+        return companies.get(input);
     }
 }

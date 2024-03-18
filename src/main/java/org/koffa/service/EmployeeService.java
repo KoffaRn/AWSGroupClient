@@ -8,6 +8,7 @@ import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.koffa.helper.EmployeeResponseHandler;
 import org.koffa.helper.ListEmployeeResponseHandler;
@@ -26,7 +27,7 @@ public class EmployeeService {
             HttpPost httpPost = new HttpPost(baseUrl + "/add");
             httpPost.setHeader("Content-type", "application/json");
             httpPost.setHeader("Authorization", "Bearer " + jwt);
-            httpPost.setEntity(new StringEntity(new Gson().toJson(employee)));
+            httpPost.setEntity(new StringEntity(new Gson().toJson(employee), ContentType.APPLICATION_JSON));
             String result = httpClient.execute(httpPost, new BasicHttpClientResponseHandler());
             if (result.equals("Employee added successfully")) {
                 return employee;
@@ -42,7 +43,7 @@ public class EmployeeService {
             HttpPatch httpPatch = new HttpPatch(baseUrl + "/update/" + id);
             httpPatch.setHeader("Content-type", "application/json");
             httpPatch.setHeader("Authorization", "Bearer " + jwt);
-            httpPatch.setEntity(new StringEntity(new Gson().toJson(employee)));
+            httpPatch.setEntity(new StringEntity(new Gson().toJson(employee), ContentType.APPLICATION_JSON));
             String result = httpClient.execute(httpPatch, new BasicHttpClientResponseHandler());
             if(result.equals("Employee updated successfully")) {
                 return employee;
