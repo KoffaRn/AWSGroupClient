@@ -22,19 +22,19 @@ public class EmployeeService {
         this.baseUrl = baseUrl + "/employee";
     }
     public Employee addEmployee(Employee employee, String jwt) throws RuntimeException {
-        try(CloseableHttpClient httpClient = HttpClients.createDefault()) {
-           HttpPost httpPost = new HttpPost(baseUrl + "/add");
-                httpPost.setHeader("Content-type", "application/json");
-                httpPost.setHeader("Authorization", "Bearer " + jwt);
-                httpPost.setEntity(new StringEntity(new Gson().toJson(employee)));
-                String result = httpClient.execute(httpPost, new BasicHttpClientResponseHandler());
-                if(result.equals("Employee added successfully")) {
-                    return employee;
-                } else {
-                    throw new RuntimeException(result);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpPost httpPost = new HttpPost(baseUrl + "/add");
+            httpPost.setHeader("Content-type", "application/json");
+            httpPost.setHeader("Authorization", "Bearer " + jwt);
+            httpPost.setEntity(new StringEntity(new Gson().toJson(employee)));
+            String result = httpClient.execute(httpPost, new BasicHttpClientResponseHandler());
+            if (result.equals("Employee added successfully")) {
+                return employee;
+            } else {
+                throw new RuntimeException(result);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
     public Employee updateEmployee (int id, Employee employee, String jwt) throws RuntimeException {

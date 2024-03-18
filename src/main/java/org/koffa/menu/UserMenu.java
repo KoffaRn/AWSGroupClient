@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class UserMenu {
 
-    private final String URL = null; //Todo add URL from the properties
+    private final String URL = "http://localhost:5000"; //Todo add URL from the properties
     private final String JWT;
     private final String username;
     Scanner scanner = new Scanner(System.in);

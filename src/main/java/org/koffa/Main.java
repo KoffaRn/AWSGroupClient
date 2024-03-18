@@ -2,6 +2,7 @@ package org.koffa;
 
 import org.koffa.menu.AdminMenu;
 import org.koffa.menu.UserIdentity;
+import org.koffa.menu.UserMenu;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,8 +13,8 @@ public class Main {
             AdminMenu adminMenu1 = new AdminMenu(auth.getToken(), auth.getUsername());
             adminMenu1.showMenu();
         } else {
-            AdminMenu adminMenu2 = new AdminMenu(auth.getToken(), auth.getUsername());
-            adminMenu2.controlEmployees();
+            UserMenu userMenu1 = new UserMenu(auth.getToken(), auth.getUsername());
+            userMenu1.showMenu();
         }
     }
 }
