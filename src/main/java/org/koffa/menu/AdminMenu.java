@@ -9,7 +9,6 @@ import org.koffa.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 public class AdminMenu {
 
@@ -117,10 +116,13 @@ public class AdminMenu {
 
         // Get the selected city
         City selectedCity = makeUserSelectCity();
-        int cityIdToDelete = selectedCity.getCityId();
 
-        // Print the name of the selected city (optional)
-        System.out.println("Selected city to delete: " + selectedCity.getCityName());
+        int cityIdToDelete = 0;
+        if (selectedCity != null) {
+            cityIdToDelete = selectedCity.getCityId();
+            // Print the name of the selected city (optional)
+            System.out.println("Selected city to delete: " + selectedCity.getCityName());
+        }
 
         // Delete the selected city
         cityService.deleteCity(cityIdToDelete, JWT);
@@ -139,6 +141,7 @@ public class AdminMenu {
 
         City city = makeUserSelectCity();
 
+        assert city != null;
         System.out.println("You chose: " + city.getCityName());
         System.out.println("Enter the new name: ");
         String name = scanner.next();
@@ -207,9 +210,12 @@ public class AdminMenu {
 
         EmployeeDTO employee = makeUserSelectEmployee();
 
-        assert employee != null;
-        employeeService.deleteEmployee(employee.getId(), JWT);
-        System.out.println("Employee: " + employee.getFirstName() + " deleted.");
+        if (employee != null) {
+            employeeService.deleteEmployee(employee.getId(), JWT);
+            System.out.println("Employee: " + employee.getFirstName() + " deleted.");
+        } else {
+            System.out.println("Employee not found.");
+        }
     }
 
     public void getEmployeeByName() {
@@ -247,7 +253,7 @@ public class AdminMenu {
     public void addEmployee() {
 
         City selectedCity = makeUserSelectCity();
-        System.out.println("You chose: " + selectedCity.getCityName());
+        System.out.println("You chose: " + (selectedCity != null ? selectedCity.getCityName() : 0));
 
         CompanyDTO selectedCompany = makeUserSelectCompany();
         assert selectedCompany != null;

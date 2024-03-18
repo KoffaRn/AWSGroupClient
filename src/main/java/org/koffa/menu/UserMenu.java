@@ -18,13 +18,12 @@ public class UserMenu {
     private final String username;
     Scanner scanner = new Scanner(System.in);
 
-    private EmployeeService employeeService;
-    private CityService cityService;
+    private final EmployeeService employeeService;
+
 
     public UserMenu(String JWT, String username) {
         this.JWT = JWT;
         this.username = username;
-        this.cityService = new CityService(URL);
         this.employeeService = new EmployeeService(URL);
     }
 

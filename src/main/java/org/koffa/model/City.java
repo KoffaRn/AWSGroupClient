@@ -1,6 +1,5 @@
 package org.koffa.model;
 
-import java.util.List;
 
 import lombok.*;
 
