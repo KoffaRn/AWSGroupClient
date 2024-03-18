@@ -484,7 +484,7 @@ public class AdminMenu {
     private void getUserById() {
         System.out.println("Enter user ID: ");
         int id = scanner.nextInt();
-        User user = userService.getUserById(Long.valueOf(id), JWT);
+        User user = userService.getUserById((long) id, JWT);
         System.out.println(user.toString());
 
     }
