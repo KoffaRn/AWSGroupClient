@@ -342,7 +342,15 @@ public class AdminMenu {
     }
 
     private void updateCompany() {
-
+        CompanyDTO company = makeUserSelectCompany();
+        System.out.println("You chose: " + company.getCompanyName());
+        System.out.println("Enter the new name: ");
+        String name = scanner.next();
+        City selectedCity = makeUserSelectCity();
+        System.out.println("You chose: " + selectedCity.getCityName());
+        company.setCompanyName(name);
+        company.setCompanyId(selectedCity.getCityId());
+        companyService.updateCompany(company.getCompanyId(), company, JWT);
     }
 
     private void addCompany() {
@@ -526,7 +534,7 @@ public class AdminMenu {
     private CompanyDTO makeUserSelectCompany() {
 
         List<CompanyDTO> companies = companyService.getCompanies(JWT);
-        System.out.println("Choose company to delete");
+        System.out.println("Choose company");
 
         int i = 1;
         for (CompanyDTO company : companies) {
@@ -537,6 +545,6 @@ public class AdminMenu {
             System.out.println("Invalid city choice.");
             return null;
         }
-        return companies.get(input);
+        return companies.get(input + 1);
     }
 }

@@ -54,7 +54,8 @@ public class CompanyService {
             HttpPatch httpPatch = new HttpPatch(baseUrl + "/update/" + id);
             httpPatch.setHeader("Content-type", "application/json");
             httpPatch.setHeader("Authorization", "Bearer " + jwt);
-            httpPatch.setEntity(new StringEntity(new Gson().toJson(companyDTO)));
+            httpPatch.setEntity(new StringEntity(new Gson().toJson(companyDTO), ContentType.APPLICATION_JSON));
+            System.out.println(new Gson().toJson(companyDTO));
             try (CloseableHttpResponse response = httpClient.execute(httpPatch)) {
                 int status = response.getCode();
                 String result = EntityUtils.toString(response.getEntity());
