@@ -10,8 +10,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Employee {
-    private long employeeId;
+    private Long employeeId;
     private String firstName;
     private String lastName;
     private String jobTitle;
