@@ -131,7 +131,7 @@ public class AdminMenu {
         // Delete the selected city
         try {
             cityService.deleteCity(cityIdToDelete, JWT);
-            } catch (Exception e) {
+        } catch (Exception e) {
             System.err.println("Failed to delete city: " + e.getMessage());
         }
     }
@@ -566,7 +566,7 @@ public class AdminMenu {
         List<User> users = new ArrayList<>();
         try {
             users = userService.getAllUsers(JWT);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             System.err.println("Failed to get users: " + e.getMessage());
         }
         System.out.println("Choose user to delete");
