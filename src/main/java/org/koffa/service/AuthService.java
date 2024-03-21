@@ -23,8 +23,8 @@ public class AuthService {
         this.httpClient = HttpClients.createDefault();
     }
 
-    public void register(RegistrationPayload payload) throws RuntimeException{
-        try{
+    public void register(RegistrationPayload payload) throws RuntimeException {
+        try {
             HttpPost httpPost = new HttpPost(baseUrl + "/register");
             httpPost.setHeader("Content-type", "application/json");
             httpPost.setEntity(new StringEntity(new Gson().toJson(payload)));
@@ -39,8 +39,8 @@ public class AuthService {
         }
     }
 
-    public LoginResponse login(RegistrationPayload payload) throws RuntimeException{
-        try{
+    public LoginResponse login(RegistrationPayload payload) throws RuntimeException {
+        try {
             HttpPost httpPost = new HttpPost(baseUrl + "/login");
             httpPost.setHeader("Content-type", "application/json");
             httpPost.setEntity(new StringEntity(new Gson().toJson(payload)));

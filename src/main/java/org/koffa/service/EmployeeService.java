@@ -19,11 +19,16 @@ import java.util.List;
 
 public class EmployeeService {
     private final String baseUrl;
+    private CloseableHttpClient httpClient;
+
     public EmployeeService(String baseUrl) {
         this.baseUrl = baseUrl + "/employee";
+        this.httpClient = HttpClients.createDefault(); // Skapar en standard HTTP-klient
     }
+
+
     public Employee addEmployee(Employee employee, String jwt) throws RuntimeException {
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+        try {
             HttpPost httpPost = new HttpPost(baseUrl + "/add");
             httpPost.setHeader("Content-type", "application/json");
             httpPost.setHeader("Authorization", "Bearer " + jwt);
@@ -38,6 +43,7 @@ public class EmployeeService {
             throw new RuntimeException(e);
         }
     }
+
     public Employee updateEmployee (int id, Employee employee, String jwt) throws RuntimeException {
         try(CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPatch httpPatch = new HttpPatch(baseUrl + "/update/" + id);
