@@ -4,7 +4,6 @@ import org.koffa.model.City;
 import org.koffa.model.Company;
 import org.koffa.model.Employee;
 import org.koffa.model.EmployeeDTO;
-import org.koffa.service.CityService;
 import org.koffa.service.EmployeeService;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.Scanner;
 
 public class UserMenu {
 
-    private final String URL = "http://localhost:5000"; //Todo add URL from the properties
+    private final String URL = "http://companyemployee-env.eba-f4erbbwe.eu-north-1.elasticbeanstalk.com"; //Todo add URL from the properties
     private final String JWT;
     private final String username;
     Scanner scanner = new Scanner(System.in);

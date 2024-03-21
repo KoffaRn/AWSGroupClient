@@ -4,16 +4,15 @@ import lombok.Getter;
 import org.koffa.model.LoginResponse;
 import org.koffa.model.RegistrationPayload;
 import org.koffa.service.*;
-import java.util.Scanner;
 
 public class UserIdentity {
     InputFilter scan = new InputFilter();
-    private AuthService authService;
+    private final AuthService authService;
     @Getter
     private LoginResponse userResponse;
 
     public UserIdentity () {
-        String baseUrl = "http://localhost:5000";
+        String baseUrl = "http://companyemployee-env.eba-f4erbbwe.eu-north-1.elasticbeanstalk.com";
         this.authService = new AuthService(baseUrl);
         start();
     }

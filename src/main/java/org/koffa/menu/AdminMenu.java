@@ -15,7 +15,7 @@ public class AdminMenu {
     // User menu allows the user to control Employees only.
     // The methods for Employees are the public and can be used in the UserMenu class.
 
-    private final String URL = "http://localhost:5000"; //Todo add URL from the properties
+    private final String URL = "http://companyemployee-env.eba-f4erbbwe.eu-north-1.elasticbeanstalk.com"; //Todo add URL from the properties
     private final String JWT;
     private final String username;
     private final UserService userService;
