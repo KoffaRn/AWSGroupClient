@@ -57,6 +57,10 @@ om backend-tjänsten och dess konfiguration på följande GitHub-repositorium:
 Dessa instruktioner hjälper dig att få en kopia av projektet upp och köra på din lokala maskin för utvecklings- och
 teständamål.
 
+##  Admin Inloggning
+- Användarnamn: admin
+- Lösenord: password
+
 ### Förutsättningar
 
 - Java 17
