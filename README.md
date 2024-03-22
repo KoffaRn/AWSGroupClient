@@ -1,5 +1,3 @@
-# README.md
-
 ## Projekttitel
 
 Det här är en klientapplikation för att hantera företag, städer, anställda och användare. Den är designad för att
